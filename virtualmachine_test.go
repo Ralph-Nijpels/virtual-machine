@@ -1,7 +1,8 @@
-// Starting file for virtual machine
 package virtualmachine
 
-func main() {
+import "testing"
+
+func TestPushByte(t *testing.T) {
 	vm := NewVirtualMachine()
 
 	program := [...]byte{
@@ -16,4 +17,5 @@ func main() {
 	vm.ShowMemory()
 	vm.Run()
 	vm.ShowStack()
+
 }
