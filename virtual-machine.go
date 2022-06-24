@@ -84,6 +84,87 @@ func (vm *VirtualMachine) operationPushInt() error {
 	return nil
 }
 
+// operationGetByte takes an address and pushes the byte from that memory-address
+func (vm *VirtualMachine) operationGetByte() error {
+	operant, err := vm.memory.GetInt(vm.programPointer + 1)
+	if err != nil {
+		vm.addLog("GetByte --> %v", err)
+		return err
+	}
+
+	value, err := vm.memory.GetByte(operant)
+	if err != nil {
+		vm.addLog("GetByte (%d) --> %v", operant, err)
+		return err
+	}
+
+	err = vm.stack.PushByte(value)
+	if err != nil {
+		vm.addLog("GetByte (%d) = %d --> %v", operant, value, err)
+		return err
+	}
+
+	vm.addLog("GetByte (%d) --> OK", operant)
+	vm.programPointer += 1 + (int)(unsafe.Sizeof(operant))
+	return nil
+}
+
+// operationGetInt takes an address and pushes the int from that memory-address
+func (vm *VirtualMachine) operationGetInt() error {
+	operant, err := vm.memory.GetInt(vm.programPointer + 1)
+	if err != nil {
+		vm.addLog("GetInt --> %v", err)
+		return err
+	}
+
+	value, err := vm.memory.GetInt(operant)
+	if err != nil {
+		vm.addLog("GetInt (%d) --> %v", operant, err)
+		return err
+	}
+
+	err = vm.stack.PushInt(value)
+	if err != nil {
+		vm.addLog("GetInt (%d) = %d --> %v", operant, value, err)
+		return err
+	}
+
+	vm.addLog("GetInt (%d) --> OK", operant)
+	vm.programPointer += 1 + (int)(unsafe.Sizeof(operant))
+	return nil
+}
+
+// operationPutByte takes an address and pops a byte into that memory-address
+func (vm *VirtualMachine) operationPutByte() error {
+	operant, err := vm.memory.GetInt(vm.programPointer + 1)
+	if err != nil {
+		vm.addLog("PutByte --> %v", err)
+		return err
+	}
+
+	value, err := vm.stack.PopByte()
+	if err != nil {
+		vm.addLog("PutByte (%d) --> %v", operant, err)
+		return err
+	}
+
+	err = vm.memory.PutByte(operant, value)
+	if err != nil {
+		vm.addLog("PutByte %d ==> (%d) --> %v", value, operant, err)
+		return err
+	}
+
+	vm.addLog("GetInt (%d) --> OK", operant)
+	vm.programPointer += 1 + (int)(unsafe.Sizeof(operant))
+	return nil
+	return nil
+}
+
+// operationPutInt takes an address and pops an int into that memory-address
+func (vm *VirtualMachine) operationPutInt() error {
+	return nil
+}
+
 // operationAddByte takes 2 bytes from the stack, adds them pushes the result
 func (vm *VirtualMachine) operationAddByte() error {
 	operant1, err := vm.stack.PopByte()
@@ -192,6 +273,7 @@ func (vm *VirtualMachine) Run() error {
 		return err
 	}
 
+	// Keep stepping until done
 	atEnd, err := vm.Step()
 	for !atEnd && err == nil {
 		atEnd, err = vm.Step()
@@ -210,8 +292,12 @@ func NewVirtualMachine() *VirtualMachine {
 	vm.jumpTable[0x00] = nil // End
 	vm.jumpTable[0x08] = vm.operationPushByte
 	vm.jumpTable[0x09] = vm.operationPushInt
-	vm.jumpTable[0x10] = vm.operationAddByte
-	vm.jumpTable[0x11] = vm.operationAddInt
+	vm.jumpTable[0x10] = vm.operationGetByte
+	vm.jumpTable[0x11] = vm.operationGetInt
+	vm.jumpTable[0x18] = vm.operationPutByte
+	vm.jumpTable[0x19] = vm.operationPutInt
+	vm.jumpTable[0x20] = vm.operationAddByte
+	vm.jumpTable[0x21] = vm.operationAddInt
 
 	// Build the resources
 	vm.stack = NewStack()
