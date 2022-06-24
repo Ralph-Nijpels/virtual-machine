@@ -304,7 +304,7 @@ func (vm *VirtualMachine) Run() error {
 
 // -- Companion functions -------------------------------------------------------------------------------------------------------
 
-func NewVirtualMachine() *VirtualMachine {
+func NewVirtualMachine(memorySize int, stackSize int) *VirtualMachine {
 	vm := new(VirtualMachine)
 
 	// Build the jumpTable
@@ -319,8 +319,8 @@ func NewVirtualMachine() *VirtualMachine {
 	vm.jumpTable[0x21] = vm.operationAddInt
 
 	// Build the resources
-	vm.stack = NewStack()
-	vm.memory = NewMemory()
+	vm.stack = NewStack(stackSize)
+	vm.memory = NewMemory(memorySize)
 
 	return vm
 }

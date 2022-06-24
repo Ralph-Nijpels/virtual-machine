@@ -8,10 +8,8 @@ import (
 	"github.com/ttacon/chalk"
 )
 
-const STACK_SIZE int = 64
-
 type Stack struct {
-	stack          [STACK_SIZE]byte
+	stack          []byte
 	stackPointer   int
 	stackOverflow  bool
 	stackUnderflow bool
@@ -25,7 +23,7 @@ func (st *Stack) PushByte(v byte) error {
 		return fmt.Errorf("StackEror")
 	}
 
-	if st.stackPointer+1 > STACK_SIZE {
+	if st.stackPointer+1 > len(st.stack) {
 		st.stackOverflow = true
 		return fmt.Errorf("StackEror")
 	}
@@ -60,7 +58,7 @@ func (st *Stack) PushInt(v int) error {
 	}
 
 	size := (int)(unsafe.Sizeof(v))
-	if st.stackPointer+size > STACK_SIZE {
+	if st.stackPointer+size > len(st.stack) {
 		st.stackOverflow = true
 		return fmt.Errorf("StackEror")
 	}
@@ -153,6 +151,10 @@ func (st *Stack) Overflow() bool {
 
 // -- Companion functions -------------------------------------------------------------------------------------------------------
 
-func NewStack() *Stack {
-	return new(Stack)
+func NewStack(stackSize int) *Stack {
+	stack := new(Stack)
+
+	stack.stack = make([]byte, stackSize)
+
+	return stack
 }

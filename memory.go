@@ -8,10 +8,8 @@ import (
 	"github.com/ttacon/chalk"
 )
 
-const MEMORY_SIZE int = 256
-
 type Memory struct {
-	memory [MEMORY_SIZE]byte
+	memory []byte
 }
 
 // -- Basic memory functions on bytes -------------------------------------------------------------------------------------------
@@ -94,6 +92,10 @@ func (mem *Memory) Show(programPointer int) {
 
 // -- Companion functions -------------------------------------------------------------------------------------------------------
 
-func NewMemory() *Memory {
-	return new(Memory)
+func NewMemory(memorySize int) *Memory {
+	memory := new(Memory)
+
+	memory.memory = make([]byte, memorySize)
+
+	return memory
 }
