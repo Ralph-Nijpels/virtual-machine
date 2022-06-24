@@ -20,12 +20,12 @@ type Stack struct {
 // PushByte puts a byte on the stack
 func (st *Stack) PushByte(v byte) error {
 	if st.stackOverflow || st.stackUnderflow {
-		return fmt.Errorf("StackEror")
+		return fmt.Errorf("Blocked")
 	}
 
 	if st.stackPointer+1 > len(st.stack) {
 		st.stackOverflow = true
-		return fmt.Errorf("StackEror")
+		return fmt.Errorf("Overflow")
 	}
 
 	st.stack[st.stackPointer] = v
@@ -37,12 +37,12 @@ func (st *Stack) PushByte(v byte) error {
 // PopByte removes a byte from the stack
 func (st *Stack) PopByte() (byte, error) {
 	if st.stackOverflow || st.stackUnderflow {
-		return 0, fmt.Errorf("StackEror")
+		return 0, fmt.Errorf("Blocked")
 	}
 
 	if st.stackPointer == 0 {
 		st.stackUnderflow = true
-		return 0, fmt.Errorf("StackEror")
+		return 0, fmt.Errorf("Underflow")
 	}
 
 	st.stackPointer--
@@ -54,13 +54,13 @@ func (st *Stack) PopByte() (byte, error) {
 // PushInt puts an int on the stack
 func (st *Stack) PushInt(v int) error {
 	if st.stackOverflow || st.stackUnderflow {
-		return fmt.Errorf("StackEror")
+		return fmt.Errorf("Blocked")
 	}
 
 	size := (int)(unsafe.Sizeof(v))
 	if st.stackPointer+size > len(st.stack) {
 		st.stackOverflow = true
-		return fmt.Errorf("StackEror")
+		return fmt.Errorf("Overflow")
 	}
 
 	address := unsafe.Pointer(&v)
@@ -79,13 +79,13 @@ func (st *Stack) PopInt() (int, error) {
 	var result int
 
 	if st.stackOverflow || st.stackUnderflow {
-		return 0, fmt.Errorf("StackEror")
+		return 0, fmt.Errorf("Blocked")
 	}
 
 	size := (int)(unsafe.Sizeof(result))
 	if st.stackPointer-size < 0 {
 		st.stackUnderflow = true
-		return 0, fmt.Errorf("StackEror")
+		return 0, fmt.Errorf("Underflow")
 	}
 
 	address := unsafe.Pointer(&(st.stack[st.stackPointer-size]))
@@ -139,6 +139,27 @@ func (st *Stack) Show() {
 
 	// Empty line at the end
 	fmt.Println()
+}
+
+func (st *Stack) Check(expectedValue []byte) error {
+	// Stack in error state
+	if st.Overflow() || st.Underflow() {
+		return fmt.Errorf("Blocked")
+	}
+
+	// Check stack pointer
+	if st.stackPointer != len(expectedValue) {
+		return fmt.Errorf("Stack pointer")
+	}
+
+	// Check content
+	for i, v := range expectedValue {
+		if st.stack[i] != v {
+			return fmt.Errorf("Stack content")
+		}
+	}
+
+	return nil
 }
 
 func (st *Stack) Underflow() bool {

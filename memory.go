@@ -15,7 +15,7 @@ type Memory struct {
 // -- Basic memory functions on bytes -------------------------------------------------------------------------------------------
 
 func (mem *Memory) GetByte(address int) (byte, error) {
-	if address < 0 || address >= MEMORY_SIZE {
+	if address < 0 || address >= len(mem.memory) {
 		return 0, fmt.Errorf("Memory Error")
 	}
 
@@ -23,7 +23,7 @@ func (mem *Memory) GetByte(address int) (byte, error) {
 }
 
 func (mem *Memory) PutByte(address int, value byte) error {
-	if address < 0 || address >= MEMORY_SIZE {
+	if address < 0 || address >= len(mem.memory) {
 		return fmt.Errorf("Memory Error")
 	}
 
@@ -37,7 +37,7 @@ func (mem *Memory) PutByte(address int, value byte) error {
 func (mem *Memory) GetInt(address int) (int, error) {
 	var result int
 
-	if address < 0 || address+(int)(unsafe.Sizeof(result)) >= MEMORY_SIZE {
+	if address < 0 || address+(int)(unsafe.Sizeof(result)) >= len(mem.memory) {
 		return 0, fmt.Errorf("Memory error")
 	}
 
@@ -47,7 +47,7 @@ func (mem *Memory) GetInt(address int) (int, error) {
 
 // PutInt stores an Int
 func (mem *Memory) PutInt(address int, value int) error {
-	if address < 0 || address+(int)(unsafe.Sizeof(value)) >= MEMORY_SIZE {
+	if address < 0 || address+(int)(unsafe.Sizeof(value)) >= len(mem.memory) {
 		return fmt.Errorf("Memory error")
 	}
 
@@ -88,6 +88,17 @@ func (mem *Memory) Show(programPointer int) {
 
 	// Empty line at the end
 	fmt.Println()
+}
+
+// Check compares (a part of) memory with some expected value, used for testing
+func (mem *Memory) Check(expectedValue []byte) error {
+	for i, v := range expectedValue {
+		if mem.memory[i] != v {
+			return fmt.Errorf("Memory Fault")
+		}
+	}
+
+	return nil
 }
 
 // -- Companion functions -------------------------------------------------------------------------------------------------------

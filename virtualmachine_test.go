@@ -1,7 +1,6 @@
 package virtualmachine
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -11,38 +10,6 @@ const MEMORY_SIZE = 256
 const STACK_SIZE = 64
 
 // -- Support functions ---------------------------------------------------------------------------------------------------------
-
-func checkStack(vm *VirtualMachine, expectedValue []byte) bool {
-	// Stack in error state
-	if vm.stack.Overflow() || vm.stack.Underflow() {
-		return false
-	}
-
-	// Compare stack pointer
-	if vm.stack.stackPointer != len(expectedValue) {
-		return false
-	}
-
-	// Compare first bytes
-	for i, v := range expectedValue {
-		if vm.stack.stack[i] != v {
-			return false
-		}
-	}
-
-	return true
-}
-
-func checkMemory(vm *VirtualMachine, expectedValue []byte) bool {
-	// compare the expected value
-	for i, v := range expectedValue {
-		if vm.memory.memory[i] != v {
-			return false
-		}
-	}
-
-	return true
-}
 
 func runProgram(program []byte, expectedStack []byte, expectedMemory []byte) error {
 	vm := NewVirtualMachine(MEMORY_SIZE, STACK_SIZE)
@@ -58,14 +25,16 @@ func runProgram(program []byte, expectedStack []byte, expectedMemory []byte) err
 	}
 
 	if expectedStack != nil {
-		if !checkStack(vm, expectedStack) {
-			return fmt.Errorf("Stack mismatch")
+		err = vm.stack.Check(expectedStack)
+		if err != nil {
+			return err
 		}
 	}
 
 	if expectedMemory != nil {
-		if !checkMemory(vm, expectedMemory) {
-			return fmt.Errorf("Memory mismatch")
+		err = vm.memory.Check(expectedMemory)
+		if err != nil {
+			return err
 		}
 	}
 
