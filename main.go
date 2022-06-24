@@ -2,7 +2,7 @@
 package main
 
 func main() {
-	vm := new(VirtualMachine)
+	vm := NewVirtualMachine()
 
 	program := [...]byte{
 		0x09,                                           // PushInt
@@ -13,7 +13,7 @@ func main() {
 		0x00} // End
 
 	vm.Load(program[:])
-	vm.showMemory()
+	vm.ShowMemory()
 	vm.Run()
-	vm.showStack()
+	vm.ShowStack()
 }

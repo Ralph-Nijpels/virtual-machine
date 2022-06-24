@@ -4,58 +4,22 @@ import (
 	"bytes"
 	"fmt"
 	"log"
-	"strings"
 	"unsafe"
-
-	"github.com/ttacon/chalk"
 )
 
+// Operation maps a processor instruction as a function pointer
+type Operation func() error
+
 // Virtual Machine models an entirely stack based processor.
-const MEMORY_SIZE int = 256
-
 type VirtualMachine struct {
-	stack *Stack
+	jumpTable [256]Operation
+	stack     *Stack
+	memory    *Memory
 
-	memory         [MEMORY_SIZE]byte
 	programPointer int
 
 	logBuffer bytes.Buffer
 	logFile   *log.Logger
-}
-
-// -- MEMORY SECTION ----------------------------------------------------------------------------------------------------------------
-
-// Function to show memory
-func (vm *VirtualMachine) showMemory() {
-	// chalk styles
-	headerStyle := chalk.White.NewStyle().WithBackground(chalk.Green).WithTextStyle(chalk.Bold)
-	defaultStyle := chalk.White.NewStyle().WithBackground(chalk.Green)
-	pointerStyle := chalk.White.NewStyle().WithBackground(chalk.Green).WithTextStyle(chalk.Underline)
-	lineItems := 16
-	lineLength := lineItems * 3
-
-	// Memory header
-	headerText := "Memory"
-	lineSpaces := lineLength - len(headerText)
-	headerText = strings.Repeat(" ", lineSpaces/2) + headerText + strings.Repeat(" ", lineSpaces-lineSpaces/2)
-	fmt.Println(headerStyle.Style(headerText))
-
-	// Memory contents
-	for i, v := range vm.memory {
-		value := fmt.Sprintf("%02X", v)
-		if i == vm.programPointer {
-			fmt.Print(pointerStyle.Style(value))
-		} else {
-			fmt.Print(defaultStyle.Style(value))
-		}
-		fmt.Print(defaultStyle.Style(" "))
-		if (i+1)%lineItems == 0 {
-			fmt.Println()
-		}
-	}
-
-	// Empty line at the end
-	fmt.Println()
 }
 
 // -- LOGGING SECTION --------------------------------------------------------------------------------------
@@ -84,9 +48,13 @@ func (vm *VirtualMachine) showLog() error {
 
 // operationPushByte takes the following bytes and pushes it as a byte
 func (vm *VirtualMachine) operationPushByte() error {
-	operant := vm.memory[vm.programPointer+1]
-	err := vm.stack.PushByte(operant)
+	operant, err := vm.memory.GetByte(vm.programPointer + 1)
+	if err != nil {
+		vm.addLog("Pushbyte --> %v\n", err)
+		return err
+	}
 
+	err = vm.stack.PushByte(operant)
 	if err != nil {
 		vm.addLog("Pushbyte %d --> %v\n", operant, err)
 		return err
@@ -99,9 +67,13 @@ func (vm *VirtualMachine) operationPushByte() error {
 
 // operationPushInt takes the following 8 bytes from memory and pushes them as an int
 func (vm *VirtualMachine) operationPushInt() error {
-	operant := *(*int)(unsafe.Pointer(&vm.memory[vm.programPointer+1]))
-	err := vm.stack.PushInt(operant)
+	operant, err := vm.memory.GetInt(vm.programPointer + 1)
+	if err != nil {
+		vm.addLog("PushInt --> %v\n", err)
+		return err
+	}
 
+	err = vm.stack.PushInt(operant)
 	if err != nil {
 		vm.addLog("PushInt %d --> %v\n", operant, err)
 		return err
@@ -170,26 +142,49 @@ func (vm *VirtualMachine) ShowStack() {
 	}
 }
 
+func (vm *VirtualMachine) ShowMemory() {
+	if vm.memory != nil {
+		vm.memory.Show(vm.programPointer)
+	}
+}
+
 func (vm *VirtualMachine) Load(program []byte) error {
 	for i, v := range program {
-		vm.memory[i] = v
+		err := vm.memory.PutByte(i, v)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
+// Step executes a single instruction and returns if we are ended
+func (vm *VirtualMachine) Step() (bool, error) {
+	// Get operation
+	opCode, err := vm.memory.GetByte(vm.programPointer)
+	if err != nil {
+		return true, err
+	}
+
+	// Check operation
+	if opCode == 0x00 {
+		return true, nil
+	}
+	if vm.jumpTable[opCode] == nil {
+		return true, fmt.Errorf("Opcode Error")
+	}
+
+	// Execute operation
+	err = vm.jumpTable[opCode]()
+	if err != nil {
+		return true, err
+	}
+
+	return false, nil
+}
+
 // main loop of the virtual machine
 func (vm *VirtualMachine) Run() error {
-
-	// The jumptable ensures a flexible way of adding functions
-	type Operation func() error
-	var jumpTable [256]Operation
-
-	// Explicitly link specific functions to specific opCodes
-	jumpTable[0x00] = nil // End
-	jumpTable[0x08] = vm.operationPushByte
-	jumpTable[0x09] = vm.operationPushInt
-	jumpTable[0x10] = vm.operationAddByte
-	jumpTable[0x11] = vm.operationAddInt
 
 	// Start the logbook, later only in error mode
 	err := vm.initLogging()
@@ -197,20 +192,12 @@ func (vm *VirtualMachine) Run() error {
 		return err
 	}
 
-	opCode := vm.memory[vm.programPointer]
-	if opCode != 0x00 && jumpTable[opCode] == nil {
-		err = fmt.Errorf("unknown opCode")
-	}
-	for opCode != 0x00 && err == nil {
-		err = jumpTable[opCode]()
-		opCode = vm.memory[vm.programPointer]
-		if opCode != 0x00 && jumpTable[opCode] == nil {
-			err = fmt.Errorf("unknown opCode")
-		}
+	atEnd, err := vm.Step()
+	for !atEnd && err == nil {
+		atEnd, err = vm.Step()
 	}
 
 	vm.showLog()
-
 	return err
 }
 
@@ -218,5 +205,17 @@ func (vm *VirtualMachine) Run() error {
 
 func NewVirtualMachine() *VirtualMachine {
 	vm := new(VirtualMachine)
+
+	// Build the jumpTable
+	vm.jumpTable[0x00] = nil // End
+	vm.jumpTable[0x08] = vm.operationPushByte
+	vm.jumpTable[0x09] = vm.operationPushInt
+	vm.jumpTable[0x10] = vm.operationAddByte
+	vm.jumpTable[0x11] = vm.operationAddInt
+
+	// Build the resources
 	vm.stack = NewStack()
+	vm.memory = NewMemory()
+
+	return vm
 }
