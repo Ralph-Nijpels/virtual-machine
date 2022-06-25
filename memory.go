@@ -37,7 +37,7 @@ func (mem *Memory) PutByte(address int, value byte) error {
 func (mem *Memory) GetInt(address int) (int, error) {
 	var result int
 
-	if address < 0 || address+(int)(unsafe.Sizeof(result)) >= len(mem.memory) {
+	if address < 0 || address+(int)(unsafe.Sizeof(result)) > len(mem.memory) {
 		return 0, fmt.Errorf("Memory error")
 	}
 
@@ -47,7 +47,7 @@ func (mem *Memory) GetInt(address int) (int, error) {
 
 // PutInt stores an Int
 func (mem *Memory) PutInt(address int, value int) error {
-	if address < 0 || address+(int)(unsafe.Sizeof(value)) >= len(mem.memory) {
+	if address < 0 || address+(int)(unsafe.Sizeof(value)) > len(mem.memory) {
 		return fmt.Errorf("Memory error")
 	}
 
