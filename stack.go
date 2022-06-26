@@ -75,9 +75,7 @@ func (st *Stack) PushInt(v int) error {
 }
 
 // PopInt removes an int from the stack
-func (st *Stack) PopInt() (int, error) {
-	var result int
-
+func (st *Stack) PopInt() (result int, err error) {
 	if st.stackOverflow || st.stackUnderflow {
 		return 0, fmt.Errorf("Blocked")
 	}
@@ -90,6 +88,48 @@ func (st *Stack) PopInt() (int, error) {
 
 	address := unsafe.Pointer(&(st.stack[st.stackPointer-size]))
 	result = *(*int)(address)
+
+	st.stackPointer -= size
+
+	return result, nil
+}
+
+// -- Basic stack functions on floats -------------------------------------------------------------------------------------------
+
+func (st *Stack) PushFloat(value float64) (err error) {
+	if st.stackOverflow || st.stackUnderflow {
+		return fmt.Errorf("Blocked")
+	}
+
+	size := (int)(unsafe.Sizeof(value))
+	if st.stackPointer+size > len(st.stack) {
+		st.stackOverflow = true
+		return fmt.Errorf("Overflow")
+	}
+
+	address := unsafe.Pointer(&value)
+	for i := 0; i < size; i++ {
+		b := *(*byte)(unsafe.Pointer(uintptr(address) + uintptr(i)))
+		st.stack[st.stackPointer+i] = b
+	}
+
+	st.stackPointer += size
+	return nil
+}
+
+func (st *Stack) PopFloat() (result float64, err error) {
+	if st.stackOverflow || st.stackUnderflow {
+		return 0, fmt.Errorf("Blocked")
+	}
+
+	size := (int)(unsafe.Sizeof(result))
+	if st.stackPointer-size < 0 {
+		st.stackUnderflow = true
+		return 0, fmt.Errorf("Underflow")
+	}
+
+	address := unsafe.Pointer(&(st.stack[st.stackPointer-size]))
+	result = *(*float64)(address)
 
 	st.stackPointer -= size
 

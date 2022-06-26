@@ -271,7 +271,7 @@ func (vm *VirtualMachine) Step() (bool, error) {
 		return true, nil
 	}
 	if vm.jumpTable[opCode] == nil {
-		return true, fmt.Errorf("Opcode Error")
+		return true, fmt.Errorf("opcode error")
 	}
 
 	// Execute operation
