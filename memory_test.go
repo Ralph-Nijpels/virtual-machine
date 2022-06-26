@@ -159,3 +159,79 @@ func TestMemoryGetInt(t *testing.T) {
 		t.Errorf("Expected a memory error")
 	}
 }
+
+func TestMemoryPutFloat(t *testing.T) {
+	testValue := float64(12.50)
+
+	mem := NewMemory(MEMORY_SIZE)
+
+	// First possible location
+	err := mem.PutFloat(0, testValue)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+	expectMem := [...]byte{
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x29, 0x40}
+	err = mem.Check(expectMem[:])
+	if err != nil {
+		t.Errorf("Expected %v, got %v", expectMem, mem.memory[:(int)(unsafe.Sizeof(testValue))])
+	}
+
+	// Last possible location
+	err = mem.PutFloat(MEMORY_SIZE-(int)(unsafe.Sizeof(testValue)), testValue)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	// Test boundary
+	err = mem.PutFloat(-1, testValue)
+	if err == nil {
+		t.Errorf("Expected memory error")
+	}
+	err = mem.PutFloat(MEMORY_SIZE-(int)(unsafe.Sizeof(testValue))+1, testValue)
+	if err == nil {
+		t.Errorf("Expected memory error")
+	}
+}
+
+func TestMemoryGetFloat(t *testing.T) {
+	testValue := float64(12.50)
+
+	mem := NewMemory(MEMORY_SIZE)
+
+	// First possible byte
+	err := mem.PutFloat(0, testValue)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+	value, err := mem.GetFloat(0)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+	if value != testValue {
+		t.Errorf("Expected %f, got %f", testValue, value)
+	}
+
+	// Last possible byte
+	err = mem.PutFloat(MEMORY_SIZE-(int)(unsafe.Sizeof(testValue)), testValue)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+	value, err = mem.GetFloat(MEMORY_SIZE - (int)(unsafe.Sizeof(testValue)))
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+	if value != testValue {
+		t.Errorf("Expected %f, got %f", testValue, value)
+	}
+
+	// Out of bounds checks
+	_, err = mem.GetFloat(-1)
+	if err == nil {
+		t.Errorf("Expected a memory error")
+	}
+	_, err = mem.GetFloat(MEMORY_SIZE - (int)(unsafe.Sizeof(testValue)) + 1)
+	if err == nil {
+		t.Errorf("Expected a memory error")
+	}
+}

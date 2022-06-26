@@ -55,6 +55,28 @@ func (mem *Memory) PutInt(address int, value int) error {
 	return nil
 }
 
+// -- Basic memory functions on Float64 -----------------------------------------------------------------------------------------
+
+func (mem *Memory) GetFloat(address int) (float64, error) {
+	var result float64
+
+	if address < 0 || address+(int)(unsafe.Sizeof(result)) > len(mem.memory) {
+		return 0, fmt.Errorf("Memory error")
+	}
+
+	result = *(*float64)(unsafe.Pointer(&mem.memory[address]))
+	return result, nil
+}
+
+func (mem *Memory) PutFloat(address int, value float64) error {
+	if address < 0 || address+(int)(unsafe.Sizeof(value)) > len(mem.memory) {
+		return fmt.Errorf("Memory error")
+	}
+
+	*(*float64)(unsafe.Pointer(&mem.memory[address])) = value
+	return nil
+}
+
 // -- Support functions ---------------------------------------------------------------------------------------------------------
 
 // Show displays the content of the memory in hex
