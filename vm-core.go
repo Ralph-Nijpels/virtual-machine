@@ -130,6 +130,9 @@ func NewVirtualMachine(memorySize int, stackSize int) *VirtualMachine {
 	vm.jumpTable[0x20] = vm.operationAddByte
 	vm.jumpTable[0x21] = vm.operationAddInt
 	vm.jumpTable[0x22] = vm.operationAddFloat
+	vm.jumpTable[0x28] = vm.operationSubByte
+	vm.jumpTable[0x29] = vm.operationSubInt
+	vm.jumpTable[0x2A] = vm.operationSubFloat
 
 	// Build the resources
 	vm.stack = NewStack(stackSize)

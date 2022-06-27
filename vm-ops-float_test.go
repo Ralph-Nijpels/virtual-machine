@@ -48,7 +48,7 @@ func TestPutFloat(t *testing.T) {
 	p := NewProgram()
 	p.WriteByte(0x0A)       // Opcode: push-float
 	p.WriteFloat(testValue) // Operant: testValue
-	p.WriteByte(0x19)       // Opcode: put-int
+	p.WriteByte(0x1A)       // Opcode: put-float
 	p.WriteInt(testAddress) // Operant: testAddress
 	p.WriteByte(0x00)       // Opcode: end
 	p.WriteFloat(0)         // Data: <empty>
@@ -78,10 +78,32 @@ func TestAddFloat(t *testing.T) {
 	p.WriteFloat(testValue1) // Operant: testValue1
 	p.WriteByte(0x0A)        // Opcode: push-float
 	p.WriteFloat(testValue2) // Operant: testValue2
-	p.WriteByte(0x22)        // Opcode: add-int
+	p.WriteByte(0x22)        // Opcode: add-float
 	p.WriteByte(0x00)        // Opcode: end
 
 	testValue3 := testValue1 + testValue2
+	stack := make([]byte, (int)(unsafe.Sizeof(testValue3)))
+	*(*float64)(unsafe.Pointer(&stack[0])) = testValue3
+
+	err := p.Run(stack[:], nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}
+
+func TestSubFloat(t *testing.T) {
+	testValue1 := float64(123.50)
+	testValue2 := float64(-12.34)
+
+	p := NewProgram()
+	p.WriteByte(0x0A)        // Opcode: push-float
+	p.WriteFloat(testValue1) // Operant: testValue1
+	p.WriteByte(0x0A)        // Opcode: push-float
+	p.WriteFloat(testValue2) // Operant: testValue2
+	p.WriteByte(0x2A)        // Opcode: sub-float
+	p.WriteByte(0x00)        // Opcode: end
+
+	testValue3 := testValue1 - testValue2
 	stack := make([]byte, (int)(unsafe.Sizeof(testValue3)))
 	*(*float64)(unsafe.Pointer(&stack[0])) = testValue3
 

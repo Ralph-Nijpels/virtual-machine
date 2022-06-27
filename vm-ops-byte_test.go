@@ -92,3 +92,25 @@ func TestAddByte(t *testing.T) {
 		t.Errorf(err.Error())
 	}
 }
+
+func TestSubByte(t *testing.T) {
+	testValue1 := byte(0x04)
+	testValue2 := byte(0x06)
+
+	p := NewProgram()
+	p.WriteByte(0x08)       // Opcode: push-byte
+	p.WriteByte(testValue1) // Operant: testValue1
+	p.WriteByte(0x08)       // Opcode: push-byte
+	p.WriteByte(testValue2) // Operant: testValue2
+	p.WriteByte(0x28)       // Opcode: sub-byte
+	p.WriteByte(0x00)       // Opcode: end
+
+	testValue3 := testValue1 - testValue2
+	stack := make([]byte, (int)(unsafe.Sizeof(testValue3)))
+	*(*byte)(unsafe.Pointer(&stack[0])) = testValue3
+
+	err := p.Run(stack[:], nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}

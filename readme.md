@@ -20,7 +20,9 @@ To train my low-level skills a bit, I've choosen to implement a virtual machine
 | 0x21   | add-int         | adds the two topmost ints on stack          |
 | 0x22   | add-float       | adds the two topmost floats on the stack    |
 |        |                 |                                             |                  
-|        | sub-int         |                                             |
+| 0x28   | sub-byte        | subtracts the two topmost bytes on stack    |
+| 0x29   | sub-int         | subtracts the two topmost ints on stack     |
+| 0x2A   | sub-float       | subtracts the two topmost floats on stack   |
 |        |                 |                                             |
 |        | mul-int         |                                             |
 |        |                 |                                             |
