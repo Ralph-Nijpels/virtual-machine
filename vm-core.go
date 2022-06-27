@@ -122,6 +122,7 @@ func NewVirtualMachine(memorySize int, stackSize int) *VirtualMachine {
 	vm.jumpTable[0x00] = nil // End
 	vm.jumpTable[0x08] = vm.operationPushByte
 	vm.jumpTable[0x09] = vm.operationPushInt
+	vm.jumpTable[0x0A] = vm.operationPushFloat
 	vm.jumpTable[0x10] = vm.operationGetByte
 	vm.jumpTable[0x11] = vm.operationGetInt
 	vm.jumpTable[0x18] = vm.operationPutByte

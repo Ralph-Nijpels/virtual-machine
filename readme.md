@@ -1,11 +1,12 @@
 # Simple virtual machine
-To train my low-level skills a bit, I've choosen to implement a simple virtual machine
+To train my low-level skills a bit, I've choosen to implement a virtual machine
 
 # Plan for the Opcodes
 | Opcode | Mnemonic        | Description                                 |
 |-------:|:----------------|:--------------------------------------------|
 | 0x08   | push-byte   nn  | pushes a constant byte value on the stack   |
 | 0x09   | push-int    nn  | pushes a contant integer value on the stack |
+| 0x0A   | push-float  nn  | pushes a constant float value on the stack  |
 |        |                 |                                             |
 | 0x10   | get-byte   (nn) | pushes a byte from memory on the stack      |
 | 0x11   | get-int    (nn) | pushes an int from memory on the stack      |
