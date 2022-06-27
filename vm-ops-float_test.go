@@ -3,15 +3,17 @@ package virtualmachine
 import "testing"
 
 func TestPushFloat(t *testing.T) {
-	program := [...]byte{
-		0x0A,                                           // PushFloat
-		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xCA, 0xEF, // random float
-		0x00} // End
+	testValue := float64(-120.7)
+
+	p := NewProgram()
+	p.WriteByte(0x0A)       // Opcode: PushFloat
+	p.WriteFloat(testValue) // Operant: testvalue
+	p.WriteByte(0x00)       // Opcode: end
 
 	stack := [...]byte{
-		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xCA, 0xEF}
+		0xCD, 0xCC, 0xCC, 0xCC, 0xCC, 0x2C, 0x5E, 0xC0}
 
-	err := runProgram(program[:], stack[:], nil)
+	err := p.Run(stack[:], nil)
 	if err != nil {
 		t.Errorf(err.Error())
 	}

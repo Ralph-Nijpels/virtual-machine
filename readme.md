@@ -18,12 +18,22 @@ To train my low-level skills a bit, I've choosen to implement a virtual machine
 | 0x21   | add-int         | adds the two topmost ints on stack          |
 |        |                 |                                             |                  
 |        | sub-int         |                                             |
+|        |                 |                                             |
 |        | mul-int         |                                             |
 |        |                 |                                             |
 |        | div-int         |                                             |
 |        |                 |                                             |
+|        | equal-int       |                                             |
+|        |                 |                                             |
+|        | unequal-int     |                                             |
+|        |                 |                                             |
+|        | greater-int     |                                             |
+|        |                 |                                             |
+|        | smaller-int     |                                             |
+|        |                 |                                             |
 |        | and-int         |                                             |
 |        |                 |                                             |
 |        | or-int          |                                             |
+|        |                 |                                             |
 
 

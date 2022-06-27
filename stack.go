@@ -184,18 +184,18 @@ func (st *Stack) Show() {
 func (st *Stack) Check(expectedValue []byte) error {
 	// Stack in error state
 	if st.Overflow() || st.Underflow() {
-		return fmt.Errorf("Blocked")
+		return fmt.Errorf("blocked")
 	}
 
 	// Check stack pointer
 	if st.stackPointer != len(expectedValue) {
-		return fmt.Errorf("Stack pointer")
+		return fmt.Errorf("expected: %X, got %X", expectedValue, st.stack[:st.stackPointer])
 	}
 
 	// Check content
 	for i, v := range expectedValue {
 		if st.stack[i] != v {
-			return fmt.Errorf("Stack content")
+			return fmt.Errorf("expected: %X, got %X", expectedValue, st.stack[:st.stackPointer])
 		}
 	}
 

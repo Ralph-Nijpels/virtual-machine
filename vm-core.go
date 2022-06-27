@@ -45,8 +45,6 @@ func (vm *VirtualMachine) showLog() error {
 
 // -- VIRTUAL MACHINE SECTION ------------------------------------------------------------------------------
 
-// -- Interface -----------------------------------------------------------------------------------------------------------------
-
 func (vm *VirtualMachine) ShowStack() {
 	if vm.stack != nil {
 		vm.stack.Show()
