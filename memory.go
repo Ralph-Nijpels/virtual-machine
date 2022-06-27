@@ -116,7 +116,7 @@ func (mem *Memory) Show(programPointer int) {
 func (mem *Memory) Check(expectedValue []byte) error {
 	for i, v := range expectedValue {
 		if mem.memory[i] != v {
-			return fmt.Errorf("Memory Fault")
+			return fmt.Errorf("expected %X, got %X", expectedValue, mem.memory[:len(expectedValue)])
 		}
 	}
 

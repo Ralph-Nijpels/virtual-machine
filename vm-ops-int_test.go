@@ -3,74 +3,85 @@ package virtualmachine
 import "testing"
 
 func TestPushInt(t *testing.T) {
-	program := [...]byte{
-		0x09,                                           // PushInt
-		0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xEF, // random int
-		0x00} // End
+	testValue := int(-325)
+
+	p := NewProgram()
+	p.WriteByte(0x09)     // Opcode: push-int
+	p.WriteInt(testValue) // Operant: testValue
+	p.WriteByte(0x00)     // Opcode: end
 
 	stack := [...]byte{
-		0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xEF}
+		0xBB, 0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}
 
-	err := runProgram(program[:], stack[:], nil)
+	err := p.Run(stack[:], nil)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
 }
 
 func TestGetInt(t *testing.T) {
-	program := [...]byte{
-		0x11,                                           // GetByte
-		0x0A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // address
-		0x00,                                           // End Program
-		0x81, 0x00, 0x00, 0x01, 0x80, 0x00, 0x00, 0x81} // Value
+	testAddress := int(0x0A)
+	testValue := int(-325)
+
+	p := NewProgram()
+	p.WriteByte(0x11)       // Opcode: get-int
+	p.WriteInt(testAddress) // Operant: testAddress
+	p.WriteByte(0x00)       // Opcode: end
+	p.WriteInt(testValue)   // Data: testValue
 
 	stack := [...]byte{
-		0x81, 0x00, 0x00, 0x01, 0x80, 0x00, 0x00, 0x81}
+		0xBB, 0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}
 
-	err := runProgram(program[:], stack[:], nil)
+	err := p.Run(stack[:], nil)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
 }
 
 func TestPutInt(t *testing.T) {
-	program := [...]byte{
-		0x09,                                           // PushInt
-		0xFE, 0x00, 0x00, 0x0F, 0xF0, 0x00, 0x00, 0xEF, // Operant
-		0x19,                                           // Put Int
-		0x13, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // Operant
-		0x00, // End Program
-		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+	testAddress := int(0x13)
+	testValue := int(-325)
+
+	p := NewProgram()
+	p.WriteByte(0x09)       // Opcode: push-int
+	p.WriteInt(testValue)   // Operant: testValue
+	p.WriteByte(0x19)       // Opcode: put-int
+	p.WriteInt(testAddress) // Operant: testAddress
+	p.WriteByte(0x00)       // Opcode: end
+	p.WriteInt(0)           // Data: <empty>
 
 	stack := [...]byte{}
 
 	memory := [...]byte{
 		0x09,                                           // see program
-		0xFE, 0x00, 0x00, 0x0F, 0xF0, 0x00, 0x00, 0xEF, // ..
+		0xBB, 0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ..
 		0x19,                                           // ..
 		0x13, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // ..
 		0x00, // End Program
-		0xFE, 0x00, 0x00, 0x0F, 0xF0, 0x00, 0x00, 0xEF}
+		0xBB, 0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}
 
-	err := runProgram(program[:], stack[:], memory[:])
+	err := p.Run(stack[:], memory[:])
 	if err != nil {
 		t.Errorf(err.Error())
 	}
 }
 
 func TestAddInt(t *testing.T) {
-	program := [...]byte{
-		0x09,                                           // PushInt
-		0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // Value
-		0x09,                                           // PushInt
-		0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // Value
-		0x21, // AddInt
-		0x00} // EndProgram
+	testValue1 := int(0x04)
+	testValue2 := int(0x06)
+
+	p := NewProgram()
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue1) // Operant: testValue1
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue2) // Operant: testValue2
+	p.WriteByte(0x21)      // Opcode: add-int
+	p.WriteByte(0x00)      // Opcode: end
 
 	stack := [...]byte{
 		0x0A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
 
-	err := runProgram(program[:], stack[:], nil)
+	err := p.Run(stack[:], nil)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
