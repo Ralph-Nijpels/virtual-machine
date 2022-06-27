@@ -202,22 +202,6 @@ func TestStackPopInt(t *testing.T) {
 	}
 }
 
-func TestStackUnderflowInt(t *testing.T) {
-	st := NewStack(STACK_SIZE)
-
-	// Cannot pop from empty stack
-	_, err := st.PopInt()
-	if err == nil {
-		t.Errorf(err.Error())
-	}
-
-	// Should be blocked
-	err = st.isBlocked()
-	if err != nil {
-		t.Errorf(err.Error())
-	}
-}
-
 func TestStackPushFloat(t *testing.T) {
 	testValue := float64(12.50)
 
