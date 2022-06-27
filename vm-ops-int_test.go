@@ -1,6 +1,9 @@
 package virtualmachine
 
-import "testing"
+import (
+	"testing"
+	"unsafe"
+)
 
 func TestPushInt(t *testing.T) {
 	testValue := int(-325)
@@ -10,8 +13,8 @@ func TestPushInt(t *testing.T) {
 	p.WriteInt(testValue) // Operant: testValue
 	p.WriteByte(0x00)     // Opcode: end
 
-	stack := [...]byte{
-		0xBB, 0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}
+	stack := make([]byte, (int)(unsafe.Sizeof(testValue)))
+	*(*int)(unsafe.Pointer(&stack[0])) = testValue
 
 	err := p.Run(stack[:], nil)
 	if err != nil {
@@ -29,8 +32,8 @@ func TestGetInt(t *testing.T) {
 	p.WriteByte(0x00)       // Opcode: end
 	p.WriteInt(testValue)   // Data: testValue
 
-	stack := [...]byte{
-		0xBB, 0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}
+	stack := make([]byte, (int)(unsafe.Sizeof(testValue)))
+	*(*int)(unsafe.Pointer(&stack[0])) = testValue
 
 	err := p.Run(stack[:], nil)
 	if err != nil {
@@ -50,17 +53,17 @@ func TestPutInt(t *testing.T) {
 	p.WriteByte(0x00)       // Opcode: end
 	p.WriteInt(0)           // Data: <empty>
 
-	stack := [...]byte{}
+	stack := make([]byte, 0)
 
-	memory := [...]byte{
-		0x09,                                           // see program
-		0xBB, 0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ..
-		0x19,                                           // ..
-		0x13, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // ..
-		0x00, // End Program
-		0xBB, 0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}
+	memory := make([]byte, p.Size())
+	_, err := p.Read(memory)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
 
-	err := p.Run(stack[:], memory[:])
+	*(*int)(unsafe.Pointer(&(memory[len(memory)-(int)(unsafe.Sizeof(testValue))]))) = testValue
+
+	err = p.Run(stack[:], memory[:])
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -78,8 +81,9 @@ func TestAddInt(t *testing.T) {
 	p.WriteByte(0x21)      // Opcode: add-int
 	p.WriteByte(0x00)      // Opcode: end
 
-	stack := [...]byte{
-		0x0A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+	testValue3 := testValue1 + testValue2
+	stack := make([]byte, (int)(unsafe.Sizeof(testValue3)))
+	*(*int)(unsafe.Pointer(&stack[0])) = testValue3
 
 	err := p.Run(stack[:], nil)
 	if err != nil {

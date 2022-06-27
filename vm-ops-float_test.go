@@ -1,6 +1,9 @@
 package virtualmachine
 
-import "testing"
+import (
+	"testing"
+	"unsafe"
+)
 
 func TestPushFloat(t *testing.T) {
 	testValue := float64(-120.7)
@@ -10,8 +13,8 @@ func TestPushFloat(t *testing.T) {
 	p.WriteFloat(testValue) // Operant: testvalue
 	p.WriteByte(0x00)       // Opcode: end
 
-	stack := [...]byte{
-		0xCD, 0xCC, 0xCC, 0xCC, 0xCC, 0x2C, 0x5E, 0xC0}
+	stack := make([]byte, (int)(unsafe.Sizeof(testValue)))
+	*(*float64)(unsafe.Pointer(&stack[0])) = testValue
 
 	err := p.Run(stack[:], nil)
 	if err != nil {

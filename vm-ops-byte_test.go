@@ -1,6 +1,9 @@
 package virtualmachine
 
-import "testing"
+import (
+	"testing"
+	"unsafe"
+)
 
 // -- Tests ---------------------------------------------------------------------------------------------------------------------
 
@@ -12,8 +15,8 @@ func TestPushByte(t *testing.T) {
 	p.WriteByte(testValue) // Operant: testValue
 	p.WriteByte(0x00)      // Opcode: End
 
-	stack := [...]byte{
-		0x0C}
+	stack := make([]byte, (int)(unsafe.Sizeof(testValue)))
+	*(*byte)(unsafe.Pointer(&stack[0])) = testValue
 
 	err := p.Run(stack[:], nil)
 	if err != nil {
@@ -31,8 +34,8 @@ func TestGetByte(t *testing.T) {
 	p.WriteByte(0x00)       // Opcode: End
 	p.WriteByte(testValue)  // Data: testValue
 
-	stack := [...]byte{
-		0x91}
+	stack := make([]byte, (int)(unsafe.Sizeof(testValue)))
+	*(*byte)(unsafe.Pointer(&stack[0])) = testValue
 
 	err := p.Run(stack[:], nil)
 	if err != nil {
@@ -52,17 +55,17 @@ func TestPutByte(t *testing.T) {
 	p.WriteByte(0x00)       // Opcode: End
 	p.WriteByte(0x00)       // Data
 
-	stack := [...]byte{}
+	stack := make([]byte, 0)
 
-	memory := [...]byte{
-		0x08,                                           // see program
-		0xFE,                                           // ..
-		0x18,                                           // ..
-		0x0C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // ..
-		0x00, // ..
-		0xFE} // Changed!
+	memory := make([]byte, p.Size())
+	_, err := p.Read(memory)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
 
-	err := p.Run(stack[:], memory[:])
+	*(*byte)(unsafe.Pointer(&(memory[len(memory)-(int)(unsafe.Sizeof(testValue))]))) = testValue
+
+	err = p.Run(stack[:], memory[:])
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -80,8 +83,9 @@ func TestAddByte(t *testing.T) {
 	p.WriteByte(0x20)       // Opcode: add-byte
 	p.WriteByte(0x00)       // Opcode: end
 
-	stack := [...]byte{
-		0x0A}
+	testValue3 := testValue1 + testValue2
+	stack := make([]byte, (int)(unsafe.Sizeof(testValue3)))
+	*(*byte)(unsafe.Pointer(&stack[0])) = testValue3
 
 	err := p.Run(stack[:], nil)
 	if err != nil {
