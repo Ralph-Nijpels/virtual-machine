@@ -27,7 +27,7 @@ func TestGetInt(t *testing.T) {
 	testValue := int(-325)
 
 	p := NewProgram()
-	p.WriteByte(0x11)       // Opcode: get-int
+	p.WriteByte(0x21)       // Opcode: get-int
 	p.WriteInt(testAddress) // Operant: testAddress
 	p.WriteByte(0x00)       // Opcode: end
 	p.WriteInt(testValue)   // Data: testValue
@@ -48,7 +48,7 @@ func TestPutInt(t *testing.T) {
 	p := NewProgram()
 	p.WriteByte(0x09)       // Opcode: push-int
 	p.WriteInt(testValue)   // Operant: testValue
-	p.WriteByte(0x19)       // Opcode: put-int
+	p.WriteByte(0x29)       // Opcode: put-int
 	p.WriteInt(testAddress) // Operant: testAddress
 	p.WriteByte(0x00)       // Opcode: end
 	p.WriteInt(0)           // Data: <empty>
@@ -78,7 +78,7 @@ func TestAddInt(t *testing.T) {
 	p.WriteInt(testValue1) // Operant: testValue1
 	p.WriteByte(0x09)      // Opcode: push-int
 	p.WriteInt(testValue2) // Operant: testValue2
-	p.WriteByte(0x21)      // Opcode: add-int
+	p.WriteByte(0x41)      // Opcode: add-int
 	p.WriteByte(0x00)      // Opcode: end
 
 	testValue3 := testValue1 + testValue2
@@ -100,7 +100,7 @@ func TestSubInt(t *testing.T) {
 	p.WriteInt(testValue1) // Operant: testValue1
 	p.WriteByte(0x09)      // Opcode: push-int
 	p.WriteInt(testValue2) // Operant: testValue2
-	p.WriteByte(0x29)      // Opcode: sub-int
+	p.WriteByte(0x49)      // Opcode: sub-int
 	p.WriteByte(0x00)      // Opcode: end
 
 	testValue3 := testValue1 - testValue2

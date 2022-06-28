@@ -121,18 +121,18 @@ func NewVirtualMachine(memorySize int, stackSize int) (vm *VirtualMachine, err e
 	vm.jumpTable[0x08] = vm.operationPushByte
 	vm.jumpTable[0x09] = vm.operationPushInt
 	vm.jumpTable[0x0A] = vm.operationPushFloat
-	vm.jumpTable[0x10] = vm.operationGetByte
-	vm.jumpTable[0x11] = vm.operationGetInt
-	vm.jumpTable[0x12] = vm.operationGetFloat
-	vm.jumpTable[0x18] = vm.operationPutByte
-	vm.jumpTable[0x19] = vm.operationPutInt
-	vm.jumpTable[0x1A] = vm.operationPutFloat
-	vm.jumpTable[0x20] = vm.operationAddByte
-	vm.jumpTable[0x21] = vm.operationAddInt
-	vm.jumpTable[0x22] = vm.operationAddFloat
-	vm.jumpTable[0x28] = vm.operationSubByte
-	vm.jumpTable[0x29] = vm.operationSubInt
-	vm.jumpTable[0x2A] = vm.operationSubFloat
+	vm.jumpTable[0x20] = vm.operationGetByte
+	vm.jumpTable[0x21] = vm.operationGetInt
+	vm.jumpTable[0x22] = vm.operationGetFloat
+	vm.jumpTable[0x28] = vm.operationPutByte
+	vm.jumpTable[0x29] = vm.operationPutInt
+	vm.jumpTable[0x2A] = vm.operationPutFloat
+	vm.jumpTable[0x40] = vm.operationAddByte
+	vm.jumpTable[0x41] = vm.operationAddInt
+	vm.jumpTable[0x42] = vm.operationAddFloat
+	vm.jumpTable[0x48] = vm.operationSubByte
+	vm.jumpTable[0x49] = vm.operationSubInt
+	vm.jumpTable[0x4A] = vm.operationSubFloat
 
 	// Build the resources
 	vm.memory = NewMemory(memorySize)
