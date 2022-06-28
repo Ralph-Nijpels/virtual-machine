@@ -116,11 +116,16 @@ func (mem *Memory) Show(programPointer int) {
 func (mem *Memory) Check(expectedValue []byte) error {
 	for i, v := range expectedValue {
 		if mem.memory[i] != v {
-			return fmt.Errorf("expected %X, got %X", expectedValue, mem.memory[:len(expectedValue)])
+			return fmt.Errorf("expected % X, got % X", expectedValue, mem.memory[:len(expectedValue)])
 		}
 	}
 
 	return nil
+}
+
+// Size returns the size of the memory
+func (mem *Memory) Size() (size int) {
+	return len(mem.memory)
 }
 
 // -- Companion functions -------------------------------------------------------------------------------------------------------

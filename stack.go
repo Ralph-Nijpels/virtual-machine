@@ -9,129 +9,140 @@ import (
 )
 
 type Stack struct {
-	stack          []byte
-	stackPointer   int
-	stackOverflow  bool
-	stackUnderflow bool
+	mem       *Memory // Memory object used to store items on stack
+	size      int     // Number of bytes 'allocated' to the stack
+	offset    int     // Starting place in memory for the stack
+	pointer   int     // current top of stack
+	overflow  bool
+	underflow bool
 }
 
 // -- Basic stack manipulation functions on bytes -------------------------------------------------------------------------------
 
 // PushByte puts a byte on the stack
-func (st *Stack) PushByte(v byte) error {
-	if st.stackOverflow || st.stackUnderflow {
-		return fmt.Errorf("Blocked")
+func (st *Stack) PushByte(value byte) (err error) {
+	if st.overflow || st.underflow {
+		return fmt.Errorf("blocked")
 	}
 
-	if st.stackPointer+1 > len(st.stack) {
-		st.stackOverflow = true
-		return fmt.Errorf("Overflow")
+	size := (int)(unsafe.Sizeof(value))
+	if st.pointer+size > st.size {
+		st.overflow = true
+		return fmt.Errorf("overflow")
 	}
 
-	st.stack[st.stackPointer] = v
-	st.stackPointer++
+	err = st.mem.PutByte(st.offset+st.pointer, value)
+	if err != nil {
+		return err
+	}
 
+	st.pointer += size
 	return nil
 }
 
 // PopByte removes a byte from the stack
-func (st *Stack) PopByte() (byte, error) {
-	if st.stackOverflow || st.stackUnderflow {
-		return 0, fmt.Errorf("Blocked")
+func (st *Stack) PopByte() (value byte, err error) {
+	if st.overflow || st.underflow {
+		return 0, fmt.Errorf("blocked")
 	}
 
-	if st.stackPointer == 0 {
-		st.stackUnderflow = true
-		return 0, fmt.Errorf("Underflow")
+	size := (int)(unsafe.Sizeof(value))
+	if st.pointer-size < 0 {
+		st.underflow = true
+		return 0, fmt.Errorf("underflow")
+	}
+	st.pointer -= size
+
+	value, err = st.mem.GetByte(st.offset + st.pointer)
+	if err != nil {
+		return 0, err
 	}
 
-	st.stackPointer--
-	return st.stack[st.stackPointer], nil
+	return value, nil
 }
 
 // -- Basic stack functions on ints ---------------------------------------------------------------------------------------------
 
 // PushInt puts an int on the stack
-func (st *Stack) PushInt(v int) error {
-	if st.stackOverflow || st.stackUnderflow {
-		return fmt.Errorf("Blocked")
+func (st *Stack) PushInt(value int) (err error) {
+	if st.overflow || st.underflow {
+		return fmt.Errorf("blocked")
 	}
 
-	size := (int)(unsafe.Sizeof(v))
-	if st.stackPointer+size > len(st.stack) {
-		st.stackOverflow = true
-		return fmt.Errorf("Overflow")
+	size := (int)(unsafe.Sizeof(value))
+	if st.pointer+size > st.size {
+		st.overflow = true
+		return fmt.Errorf("overflow")
 	}
 
-	address := unsafe.Pointer(&v)
-	for i := 0; i < size; i++ {
-		b := *(*byte)(unsafe.Pointer(uintptr(address) + uintptr(i)))
-		st.stack[st.stackPointer+i] = b
+	err = st.mem.PutInt(st.offset+st.pointer, value)
+	if err != nil {
+		return err
 	}
 
-	st.stackPointer += size
-
+	st.pointer += size
 	return nil
 }
 
 // PopInt removes an int from the stack
-func (st *Stack) PopInt() (result int, err error) {
-	if st.stackOverflow || st.stackUnderflow {
-		return 0, fmt.Errorf("Blocked")
+func (st *Stack) PopInt() (value int, err error) {
+	if st.overflow || st.underflow {
+		return 0, fmt.Errorf("blocked")
 	}
 
-	size := (int)(unsafe.Sizeof(result))
-	if st.stackPointer-size < 0 {
-		st.stackUnderflow = true
-		return 0, fmt.Errorf("Underflow")
+	size := (int)(unsafe.Sizeof(value))
+	if st.pointer-size < 0 {
+		st.underflow = true
+		return 0, fmt.Errorf("underflow")
 	}
 
-	address := unsafe.Pointer(&(st.stack[st.stackPointer-size]))
-	result = *(*int)(address)
+	st.pointer -= size
+	value, err = st.mem.GetInt(st.offset + st.pointer)
+	if err != nil {
+		return 0, err
+	}
 
-	st.stackPointer -= size
-
-	return result, nil
+	return value, nil
 }
 
 // -- Basic stack functions on floats -------------------------------------------------------------------------------------------
 
 func (st *Stack) PushFloat(value float64) (err error) {
-	if st.stackOverflow || st.stackUnderflow {
-		return fmt.Errorf("Blocked")
+	if st.overflow || st.underflow {
+		return fmt.Errorf("blocked")
 	}
 
 	size := (int)(unsafe.Sizeof(value))
-	if st.stackPointer+size > len(st.stack) {
-		st.stackOverflow = true
-		return fmt.Errorf("Overflow")
+	if st.pointer+size > st.size {
+		st.overflow = true
+		return fmt.Errorf("overflow")
 	}
 
-	address := unsafe.Pointer(&value)
-	for i := 0; i < size; i++ {
-		b := *(*byte)(unsafe.Pointer(uintptr(address) + uintptr(i)))
-		st.stack[st.stackPointer+i] = b
+	err = st.mem.PutFloat(st.offset+st.pointer, value)
+	if err != nil {
+		return err
 	}
 
-	st.stackPointer += size
+	st.pointer += size
 	return nil
 }
 
 func (st *Stack) PopFloat() (result float64, err error) {
-	if st.stackOverflow || st.stackUnderflow {
-		return 0, fmt.Errorf("Blocked")
+	if st.overflow || st.underflow {
+		return 0, fmt.Errorf("blocked")
 	}
 
 	size := (int)(unsafe.Sizeof(result))
-	if st.stackPointer-size < 0 {
-		st.stackUnderflow = true
-		return 0, fmt.Errorf("Underflow")
+	if st.pointer-size < 0 {
+		st.underflow = true
+		return 0, fmt.Errorf("underflow")
 	}
 
-	address := unsafe.Pointer(&(st.stack[st.stackPointer-size]))
-	result = *(*float64)(address)
-
-	st.stackPointer -= size
+	st.pointer -= size
+	result, err = st.mem.GetFloat(st.offset + st.pointer)
+	if err != nil {
+		return 0, err
+	}
 
 	return result, nil
 }
@@ -151,25 +162,29 @@ func (st *Stack) Show() {
 
 	// Stack header
 	headerText := "Stack"
-	if st.stackOverflow {
+	if st.overflow {
 		headerText = "Stack (overflow)"
 	}
 
 	lineSpaces := lineLength - len(headerText)
 	headerText = strings.Repeat(" ", lineSpaces/2) + headerText + strings.Repeat(" ", lineSpaces-lineSpaces/2)
-	if st.stackOverflow {
+	if st.overflow {
 		fmt.Println(errorStyle.Style(headerText))
 	} else {
 		fmt.Println(headerStyle.Style(headerText))
 	}
 
 	// Stack contents
-	for i, v := range st.stack {
-		value := fmt.Sprintf("%02X", v)
-		if i == st.stackPointer {
-			fmt.Print(pointerStyle.Style(value))
+	for i := 0; i < st.size; i++ {
+		value, err := st.mem.GetByte(st.offset + i)
+		if err != nil {
+			return
+		}
+		cell := fmt.Sprintf("%02X", value)
+		if i == st.pointer {
+			fmt.Print(pointerStyle.Style(cell))
 		} else {
-			fmt.Print(defaultStyle.Style(value))
+			fmt.Print(defaultStyle.Style(cell))
 		}
 		fmt.Print(defaultStyle.Style(" "))
 		if (i+1)%lineItems == 0 {
@@ -181,21 +196,30 @@ func (st *Stack) Show() {
 	fmt.Println()
 }
 
-func (st *Stack) Check(expectedValue []byte) error {
+func (st *Stack) Check(expectedValue []byte) (err error) {
 	// Stack in error state
 	if st.Overflow() || st.Underflow() {
 		return fmt.Errorf("blocked")
 	}
 
+	// Retrieve entire current stack
+	stack := make([]byte, st.size)
+	for i := 0; i < len(stack); i++ {
+		stack[i], err = st.mem.GetByte(st.offset + i)
+		if err != nil {
+			return err
+		}
+	}
+
 	// Check stack pointer
-	if st.stackPointer != len(expectedValue) {
-		return fmt.Errorf("expected: %X, got %X", expectedValue, st.stack[:st.stackPointer])
+	if st.pointer != len(expectedValue) {
+		return fmt.Errorf("expected: % X, got % X", expectedValue, stack)
 	}
 
 	// Check content
 	for i, v := range expectedValue {
-		if st.stack[i] != v {
-			return fmt.Errorf("expected: %X, got %X", expectedValue, st.stack[:st.stackPointer])
+		if stack[i] != v {
+			return fmt.Errorf("expected: % X, got % X", expectedValue, stack)
 		}
 	}
 
@@ -203,19 +227,28 @@ func (st *Stack) Check(expectedValue []byte) error {
 }
 
 func (st *Stack) Underflow() bool {
-	return st.stackUnderflow
+	return st.underflow
 }
 
 func (st *Stack) Overflow() bool {
-	return st.stackOverflow
+	return st.overflow
 }
 
 // -- Companion functions -------------------------------------------------------------------------------------------------------
 
-func NewStack(stackSize int) *Stack {
-	stack := new(Stack)
+func NewStack(mem *Memory, stackSize int) (st *Stack, err error) {
+	if mem == nil {
+		return nil, fmt.Errorf("missing parameter")
+	}
+	if stackSize < 0 || stackSize > mem.Size() {
+		return nil, fmt.Errorf("illegal stack size")
+	}
 
-	stack.stack = make([]byte, stackSize)
+	st = new(Stack)
+	st.mem = mem
+	st.offset = mem.Size() - stackSize
+	st.size = stackSize
+	st.pointer = 0
 
-	return stack
+	return st, nil
 }

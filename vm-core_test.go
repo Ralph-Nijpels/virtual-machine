@@ -66,7 +66,10 @@ func (p *Program) Size() (size int) {
 }
 
 func (p *Program) Run(expectedStack []byte, expectedMemory []byte) (err error) {
-	vm := NewVirtualMachine(MEMORY_SIZE, STACK_SIZE)
+	vm, err := NewVirtualMachine(MEMORY_SIZE, STACK_SIZE)
+	if err != nil {
+		return err
+	}
 
 	err = vm.Load(p.code[:p.len])
 	if err != nil {

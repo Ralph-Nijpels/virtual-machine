@@ -113,8 +113,8 @@ func (vm *VirtualMachine) Run() error {
 
 // -- Companion functions -------------------------------------------------------------------------------------------------------
 
-func NewVirtualMachine(memorySize int, stackSize int) *VirtualMachine {
-	vm := new(VirtualMachine)
+func NewVirtualMachine(memorySize int, stackSize int) (vm *VirtualMachine, err error) {
+	vm = new(VirtualMachine)
 
 	// Build the jumpTable
 	vm.jumpTable[0x00] = nil // End
@@ -135,8 +135,11 @@ func NewVirtualMachine(memorySize int, stackSize int) *VirtualMachine {
 	vm.jumpTable[0x2A] = vm.operationSubFloat
 
 	// Build the resources
-	vm.stack = NewStack(stackSize)
 	vm.memory = NewMemory(memorySize)
+	vm.stack, err = NewStack(vm.memory, stackSize)
+	if err != nil {
+		return nil, err
+	}
 
-	return vm
+	return vm, nil
 }
