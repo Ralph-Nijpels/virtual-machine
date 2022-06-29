@@ -213,13 +213,13 @@ func (st *Stack) Check(expectedValue []byte) (err error) {
 
 	// Check stack pointer
 	if st.pointer != len(expectedValue) {
-		return fmt.Errorf("expected: % X, got % X", expectedValue, stack)
+		return fmt.Errorf("expected: % X, got % X", expectedValue, stack[:st.pointer])
 	}
 
 	// Check content
 	for i, v := range expectedValue {
 		if stack[i] != v {
-			return fmt.Errorf("expected: % X, got % X", expectedValue, stack)
+			return fmt.Errorf("expected: % X, got % X", expectedValue, stack[:st.pointer])
 		}
 	}
 

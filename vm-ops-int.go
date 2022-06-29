@@ -20,8 +20,31 @@ func (vm *VirtualMachine) operationPushInt() (err error) {
 	return nil
 }
 
-// operationGetInt takes an address and pushes the int from that memory-address
+// operationGetInt pops an address from stack and pushes the int from that memory-address
 func (vm *VirtualMachine) operationGetInt() (err error) {
+	address, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	value, err := vm.memory.GetInt(address)
+	if err != nil {
+		return err
+	}
+
+	err = vm.stack.PushInt(value)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer += 1
+
+	vm.addLog("GetInt %d", value)
+	return nil
+}
+
+// operationGetIntAddress takes an address and pushes the int from that memory-address
+func (vm *VirtualMachine) operationGetIntAddress() (err error) {
 	operant, err := vm.memory.GetInt(vm.programPointer + 1)
 	if err != nil {
 		return err
@@ -43,8 +66,8 @@ func (vm *VirtualMachine) operationGetInt() (err error) {
 	return nil
 }
 
-// operationPutInt takes an address and pops an int into that memory-address
-func (vm *VirtualMachine) operationPutInt() (err error) {
+// operationPutIntAddress takes an address and pops an int into that memory-address
+func (vm *VirtualMachine) operationPutIntAddress() (err error) {
 	operant, err := vm.memory.GetInt(vm.programPointer + 1)
 	if err != nil {
 		return err

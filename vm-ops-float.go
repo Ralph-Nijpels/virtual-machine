@@ -16,12 +16,35 @@ func (vm *VirtualMachine) operationPushFloat() (err error) {
 
 	vm.programPointer += 1 + (int)(unsafe.Sizeof(operant))
 
-	vm.addLog("PushFloat %f", operant)
+	vm.addLog("push-float %f", operant)
 	return nil
 }
 
-// operationGetFloat takes an address and pushes the float from that memory-address
+// operationGetFloat pops an address and pushes the float from that memory-address
 func (vm *VirtualMachine) operationGetFloat() (err error) {
+	address, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	value, err := vm.memory.GetFloat(address)
+	if err != nil {
+		return err
+	}
+
+	err = vm.stack.PushFloat(value)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer += 1
+
+	vm.addLog("get-float")
+	return nil
+}
+
+// operationGetFloatAddress takes an address and pushes the float from that memory-address
+func (vm *VirtualMachine) operationGetFloatAddress() (err error) {
 	operant, err := vm.memory.GetInt(vm.programPointer + 1)
 	if err != nil {
 		return err
@@ -39,12 +62,12 @@ func (vm *VirtualMachine) operationGetFloat() (err error) {
 
 	vm.programPointer += 1 + (int)(unsafe.Sizeof(operant))
 
-	vm.addLog("GetFloat (%d) -> %f", operant, value)
+	vm.addLog("get-float (%d)", operant)
 	return nil
 }
 
-// operationPutFloat takes an address and pops a float into that memory-address
-func (vm *VirtualMachine) operationPutFloat() (err error) {
+// operationPutFloatAddress takes an address and pops a float into that memory-address
+func (vm *VirtualMachine) operationPutFloatAddress() (err error) {
 	operant, err := vm.memory.GetInt(vm.programPointer + 1)
 	if err != nil {
 		return err
@@ -62,7 +85,7 @@ func (vm *VirtualMachine) operationPutFloat() (err error) {
 
 	vm.programPointer += 1 + (int)(unsafe.Sizeof(operant))
 
-	vm.addLog("PutFloat %f -> (%d)", value, operant)
+	vm.addLog("put-float (%d)", operant)
 	return nil
 }
 
@@ -85,7 +108,7 @@ func (vm *VirtualMachine) operationAddFloat() error {
 
 	vm.programPointer++
 
-	vm.addLog("AddFloat %f, %f: OK", operant1, operant2)
+	vm.addLog("add-float")
 	return nil
 }
 
@@ -108,6 +131,6 @@ func (vm *VirtualMachine) operationSubFloat() (err error) {
 
 	vm.programPointer++
 
-	vm.addLog("SubFloat %f, %f --> %f", operant2, operant1, operant2-operant1)
+	vm.addLog("sub-float")
 	return nil
 }

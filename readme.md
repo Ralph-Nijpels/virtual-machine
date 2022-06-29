@@ -13,9 +13,9 @@ To train my low-level skills a bit, I've choosen to implement a virtual machine
 | [x]  | 0x09   | push-int    nn  | pushes a contant integer value on the stack                                               |
 | [x]  | 0x0A   | push-float  nn  | pushes a constant float value on the stack                                                |
 |      |        |                 |                                                                                           |
-| [ ]  | 0x10   | get-byte        | pops an address from stack, retrieves a byte from this address and push it onto the stack |
-| [ ]  | 0x11   | get-int         | pops an address from stack, retrieves a byte from this address and push it onto the stack |
-| [ ]  | 0x12   | get-float       | pops an address from stack, retrieves a byte from this address and push it onto the stack |
+| [x]  | 0x10   | get-byte        | pops an address from stack, retrieves a byte from this address and push it onto the stack |
+| [x]  | 0x11   | get-int         | pops an address from stack, retrieves a byte from this address and push it onto the stack |
+| [x]  | 0x12   | get-float       | pops an address from stack, retrieves a byte from this address and push it onto the stack |
 |      |        |                 |                                                                                           |
 | [ ]  | 0x18   | put-byte        | pops an address from stack, pops a byte from stack and stores it in memory                |
 | [ ]  | 0x18   | put-byte        | pops an address from stack, pops a byte from stack and stores it in memory                |

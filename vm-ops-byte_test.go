@@ -25,6 +25,26 @@ func TestPushByte(t *testing.T) {
 }
 
 func TestGetByte(t *testing.T) {
+	testAddress := int(0x0B)
+	testValue := byte(0x91)
+
+	p := NewProgram()
+	p.WriteByte(0x09)       // Opcode: push-int
+	p.WriteInt(testAddress) // Operant: testAddress
+	p.WriteByte(0x10)       // Opcode: get-byte
+	p.WriteByte(0x00)       // Opcode: end
+	p.WriteByte(testValue)  // Data: testValue
+
+	stack := make([]byte, (int)(unsafe.Sizeof(testValue)))
+	*(*byte)(unsafe.Pointer(&stack[0])) = testValue
+
+	err := p.Run(stack[:], nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}
+
+func TestGetByteAddress(t *testing.T) {
 	testAddress := int(10)
 	testValue := byte(0x91)
 
@@ -43,7 +63,7 @@ func TestGetByte(t *testing.T) {
 	}
 }
 
-func TestPutByte(t *testing.T) {
+func TestPutByteAddress(t *testing.T) {
 	testValue := byte(0xFE)
 	testAddress := int(0x0C)
 
