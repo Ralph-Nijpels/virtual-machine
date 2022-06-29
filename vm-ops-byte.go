@@ -16,7 +16,7 @@ func (vm *VirtualMachine) operationPushByte() (err error) {
 
 	vm.programPointer += 2
 
-	vm.addLog("Pushbyte %d", operant)
+	vm.addLog("push-byte %d", operant)
 	return nil
 }
 
@@ -39,7 +39,7 @@ func (vm *VirtualMachine) operationGetByte() (err error) {
 
 	vm.programPointer += 1
 
-	vm.addLog("GetByte %d", value)
+	vm.addLog("get-byte")
 	return nil
 }
 
@@ -62,7 +62,30 @@ func (vm *VirtualMachine) operationGetByteAddress() (err error) {
 
 	vm.programPointer += 1 + (int)(unsafe.Sizeof(operant))
 
-	vm.addLog("GetByte (%d) -> %d", operant, value)
+	vm.addLog("get-byte (%d)", operant)
+	return nil
+}
+
+// operationPutByte pops an address and pops a byte into that memory-address
+func (vm *VirtualMachine) operationPutByte() (err error) {
+	address, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	value, err := vm.stack.PopByte()
+	if err != nil {
+		return err
+	}
+
+	err = vm.memory.PutByte(address, value)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer += 1
+
+	vm.addLog("put-byte")
 	return nil
 }
 
@@ -85,7 +108,7 @@ func (vm *VirtualMachine) operationPutByteAddress() (err error) {
 
 	vm.programPointer += 1 + (int)(unsafe.Sizeof(operant))
 
-	vm.addLog("PutByte %d -> (%d)", value, operant)
+	vm.addLog("put-byte (%d)", operant)
 	return nil
 }
 
@@ -108,7 +131,7 @@ func (vm *VirtualMachine) operationAddByte() (err error) {
 
 	vm.programPointer++
 
-	vm.addLog("AddByte %d, %d", operant1, operant2)
+	vm.addLog("add-byte")
 	return nil
 }
 
@@ -131,6 +154,6 @@ func (vm *VirtualMachine) operationSubByte() (err error) {
 
 	vm.programPointer++
 
-	vm.addLog("AddByte %d, %d", operant2, operant1)
+	vm.addLog("sub-byte")
 	return nil
 }

@@ -42,6 +42,35 @@ func TestGetFloat(t *testing.T) {
 	}
 }
 
+func TestPutFloat(t *testing.T) {
+	testAddress := int(0x14)
+	testValue := float64(-12.34)
+
+	p := NewProgram()
+	p.WriteByte(0x0A)       // Opcode: push-float
+	p.WriteFloat(testValue) // Operant: testValue
+	p.WriteByte(0x09)       // Opcode: push-int
+	p.WriteInt(testAddress) // Operant: testAddress
+	p.WriteByte(0x1A)       // Opcode: put-float
+	p.WriteByte(0x00)       // Opcode: end
+	p.WriteFloat(0)         // Data: <empty>
+
+	stack := make([]byte, 0)
+
+	memory := make([]byte, p.Size())
+	_, err := p.Read(memory)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	*(*float64)(unsafe.Pointer(&(memory[len(memory)-(int)(unsafe.Sizeof(testValue))]))) = testValue
+
+	err = p.Run(stack[:], memory[:])
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}
+
 func TestGetFloatAddress(t *testing.T) {
 	testAddress := int(0x0A)
 	testValue := float64(-12.34)
@@ -68,7 +97,7 @@ func TestPutFloatAddress(t *testing.T) {
 	p := NewProgram()
 	p.WriteByte(0x0A)       // Opcode: push-float
 	p.WriteFloat(testValue) // Operant: testValue
-	p.WriteByte(0x2A)       // Opcode: put-float
+	p.WriteByte(0x2A)       // Opcode: put-float()
 	p.WriteInt(testAddress) // Operant: testAddress
 	p.WriteByte(0x00)       // Opcode: end
 	p.WriteFloat(0)         // Data: <empty>

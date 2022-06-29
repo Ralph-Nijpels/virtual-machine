@@ -43,6 +43,29 @@ func (vm *VirtualMachine) operationGetFloat() (err error) {
 	return nil
 }
 
+// operationPutFloat pops a memory-address and pops a float into that memory-address
+func (vm *VirtualMachine) operationPutFloat() (err error) {
+	address, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	value, err := vm.stack.PopFloat()
+	if err != nil {
+		return err
+	}
+
+	err = vm.memory.PutFloat(address, value)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer += 1
+
+	vm.addLog("put-float")
+	return nil
+}
+
 // operationGetFloatAddress takes an address and pushes the float from that memory-address
 func (vm *VirtualMachine) operationGetFloatAddress() (err error) {
 	operant, err := vm.memory.GetInt(vm.programPointer + 1)

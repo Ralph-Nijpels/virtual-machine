@@ -47,7 +47,7 @@ func TestGetIntAddress(t *testing.T) {
 	testValue := int(-325)
 
 	p := NewProgram()
-	p.WriteByte(0x21)       // Opcode: get-int
+	p.WriteByte(0x21)       // Opcode: get-int()
 	p.WriteInt(testAddress) // Operant: testAddress
 	p.WriteByte(0x00)       // Opcode: end
 	p.WriteInt(testValue)   // Data: testValue
@@ -61,6 +61,35 @@ func TestGetIntAddress(t *testing.T) {
 	}
 }
 
+func TestPutInt(t *testing.T) {
+	testAddress := int(0x14)
+	testValue := int(-325)
+
+	p := NewProgram()
+	p.WriteByte(0x09)       // Opcode: push-int
+	p.WriteInt(testValue)   // Operant: testValue
+	p.WriteByte(0x09)       // Opcode: push-int
+	p.WriteInt(testAddress) // Operant: testAddress
+	p.WriteByte(0x19)       // Opcode: put-int
+	p.WriteByte(0x00)       // Opcode: end
+	p.WriteInt(0)           // Data: <empty>
+
+	stack := make([]byte, 0)
+
+	memory := make([]byte, p.Size())
+	_, err := p.Read(memory)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	*(*int)(unsafe.Pointer(&(memory[len(memory)-(int)(unsafe.Sizeof(testValue))]))) = testValue
+
+	err = p.Run(stack[:], memory[:])
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}
+
 func TestPutIntAddress(t *testing.T) {
 	testAddress := int(0x13)
 	testValue := int(-325)
@@ -68,7 +97,7 @@ func TestPutIntAddress(t *testing.T) {
 	p := NewProgram()
 	p.WriteByte(0x09)       // Opcode: push-int
 	p.WriteInt(testValue)   // Operant: testValue
-	p.WriteByte(0x29)       // Opcode: put-int
+	p.WriteByte(0x29)       // Opcode: put-int()
 	p.WriteInt(testAddress) // Operant: testAddress
 	p.WriteByte(0x00)       // Opcode: end
 	p.WriteInt(0)           // Data: <empty>

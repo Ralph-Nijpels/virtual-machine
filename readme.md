@@ -3,7 +3,7 @@ To train my low-level skills a bit, I've choosen to implement a virtual machine
 
 # Refactoring to-do
 - [ ] Implement short rather than byte opcodes. We are going to run out of opcodes if we want to implement strings
-- [ ] Implement get-xxx / put-xxx using an address from stack. Needed to allow for calculated addresses if we want to implement strings and arrays
+- [x] Implement get-xxx / put-xxx using an address from stack. Needed to allow for calculated addresses if we want to implement strings and arrays
 - [ ] Implement get-xxx / put-xxx using an address relative to the stack-pointer. Needed to create stack-frames to implement call/return 
 
 # Plan for the Opcodes
@@ -17,9 +17,9 @@ To train my low-level skills a bit, I've choosen to implement a virtual machine
 | [x]  | 0x11   | get-int         | pops an address from stack, retrieves a byte from this address and push it onto the stack |
 | [x]  | 0x12   | get-float       | pops an address from stack, retrieves a byte from this address and push it onto the stack |
 |      |        |                 |                                                                                           |
-| [ ]  | 0x18   | put-byte        | pops an address from stack, pops a byte from stack and stores it in memory                |
-| [ ]  | 0x18   | put-byte        | pops an address from stack, pops a byte from stack and stores it in memory                |
-| [ ]  | 0x18   | put-byte        | pops an address from stack, pops a byte from stack and stores it in memory                |
+| [x]  | 0x18   | put-byte        | pops an address from stack, pops a byte from stack and stores it in memory                |
+| [x]  | 0x19   | put-int         | pops an address from stack, pops an int from stack and stores it in memory                |
+| [x]  | 0x1A   | put-float       | pops an address from stack, pops a float from stack and stores it in memory               |
 |      |        |                 |                                                                                           |
 | [x]  | 0x20   | get-byte   (nn) | pushes a byte from memory on the stack                                                    |
 | [x]  | 0x21   | get-int    (nn) | pushes an int from memory on the stack                                                    |

@@ -124,6 +124,9 @@ func NewVirtualMachine(memorySize int, stackSize int) (vm *VirtualMachine, err e
 	vm.jumpTable[0x10] = vm.operationGetByte
 	vm.jumpTable[0x11] = vm.operationGetInt
 	vm.jumpTable[0x12] = vm.operationGetFloat
+	vm.jumpTable[0x18] = vm.operationPutByte
+	vm.jumpTable[0x19] = vm.operationPutInt
+	vm.jumpTable[0x1A] = vm.operationPutFloat
 	vm.jumpTable[0x20] = vm.operationGetByteAddress
 	vm.jumpTable[0x21] = vm.operationGetIntAddress
 	vm.jumpTable[0x22] = vm.operationGetFloatAddress
