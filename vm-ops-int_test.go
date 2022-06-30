@@ -2,7 +2,6 @@ package virtualmachine
 
 import (
 	"testing"
-	"unsafe"
 )
 
 func TestPushInt(t *testing.T) {
@@ -13,10 +12,10 @@ func TestPushInt(t *testing.T) {
 	p.WriteInt(testValue) // Operant: testValue
 	p.WriteByte(0x00)     // Opcode: end
 
-	stack := make([]byte, (int)(unsafe.Sizeof(testValue)))
-	*(*int)(unsafe.Pointer(&stack[0])) = testValue
+	s := NewBuffer()
+	s.WriteInt(testValue)
 
-	err := p.Run(stack[:], nil)
+	err := p.Run(s, nil)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -33,10 +32,10 @@ func TestGetInt(t *testing.T) {
 	p.WriteByte(0x00)       // Opcode: end
 	p.WriteInt(testValue)   // Data: testValue
 
-	stack := make([]byte, (int)(unsafe.Sizeof(testValue)))
-	*(*int)(unsafe.Pointer(&stack[0])) = testValue
+	s := NewBuffer()
+	s.WriteInt(testValue)
 
-	err := p.Run(stack[:], nil)
+	err := p.Run(s, nil)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -52,10 +51,10 @@ func TestGetIntAddress(t *testing.T) {
 	p.WriteByte(0x00)       // Opcode: end
 	p.WriteInt(testValue)   // Data: testValue
 
-	stack := make([]byte, (int)(unsafe.Sizeof(testValue)))
-	*(*int)(unsafe.Pointer(&stack[0])) = testValue
+	s := NewBuffer()
+	s.WriteInt(testValue)
 
-	err := p.Run(stack[:], nil)
+	err := p.Run(s, nil)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -72,19 +71,14 @@ func TestPutInt(t *testing.T) {
 	p.WriteInt(testAddress) // Operant: testAddress
 	p.WriteByte(0x19)       // Opcode: put-int
 	p.WriteByte(0x00)       // Opcode: end
-	p.WriteInt(0)           // Data: <empty>
 
-	stack := make([]byte, 0)
+	s := NewBuffer()
 
-	memory := make([]byte, p.Size())
-	_, err := p.Read(memory)
-	if err != nil {
-		t.Errorf(err.Error())
-	}
+	m := NewBuffer()
+	m.Copy(&p.Buffer)
+	m.WriteInt(testValue)
 
-	*(*int)(unsafe.Pointer(&(memory[len(memory)-(int)(unsafe.Sizeof(testValue))]))) = testValue
-
-	err = p.Run(stack[:], memory[:])
+	err := p.Run(s, m)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -100,19 +94,14 @@ func TestPutIntAddress(t *testing.T) {
 	p.WriteByte(0x29)       // Opcode: put-int()
 	p.WriteInt(testAddress) // Operant: testAddress
 	p.WriteByte(0x00)       // Opcode: end
-	p.WriteInt(0)           // Data: <empty>
 
-	stack := make([]byte, 0)
+	s := NewBuffer()
 
-	memory := make([]byte, p.Size())
-	_, err := p.Read(memory)
-	if err != nil {
-		t.Errorf(err.Error())
-	}
+	m := NewBuffer()
+	m.Copy(&p.Buffer)
+	m.WriteInt(testValue)
 
-	*(*int)(unsafe.Pointer(&(memory[len(memory)-(int)(unsafe.Sizeof(testValue))]))) = testValue
-
-	err = p.Run(stack[:], memory[:])
+	err := p.Run(s, m)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -129,11 +118,11 @@ func TestGetIntStack(t *testing.T) {
 	p.WriteInt(testAddress) // Operant: testAddress
 	p.WriteByte(0x00)       // Opcode: end
 
-	stack := make([]byte, (int)(unsafe.Sizeof(testValue))*2)
-	*(*int)(unsafe.Pointer(&stack[0])) = testValue
-	*(*int)(unsafe.Pointer(uintptr(unsafe.Pointer(&stack[0])) + unsafe.Sizeof(testValue))) = testValue
+	s := NewBuffer()
+	s.WriteInt(testValue)
+	s.WriteInt(testValue)
 
-	err := p.Run(stack[:], nil)
+	err := p.Run(s, nil)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -152,10 +141,10 @@ func TestAddInt(t *testing.T) {
 	p.WriteByte(0x00)      // Opcode: end
 
 	testValue3 := testValue1 + testValue2
-	stack := make([]byte, (int)(unsafe.Sizeof(testValue3)))
-	*(*int)(unsafe.Pointer(&stack[0])) = testValue3
+	s := NewBuffer()
+	s.WriteInt(testValue3)
 
-	err := p.Run(stack[:], nil)
+	err := p.Run(s, nil)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -174,10 +163,10 @@ func TestSubInt(t *testing.T) {
 	p.WriteByte(0x00)      // Opcode: end
 
 	testValue3 := testValue1 - testValue2
-	stack := make([]byte, (int)(unsafe.Sizeof(testValue3)))
-	*(*int)(unsafe.Pointer(&stack[0])) = testValue3
+	s := NewBuffer()
+	s.WriteInt(testValue3)
 
-	err := p.Run(stack[:], nil)
+	err := p.Run(s, nil)
 	if err != nil {
 		t.Errorf(err.Error())
 	}

@@ -2,7 +2,6 @@ package virtualmachine
 
 import (
 	"testing"
-	"unsafe"
 )
 
 func TestPushFloat(t *testing.T) {
@@ -13,10 +12,10 @@ func TestPushFloat(t *testing.T) {
 	p.WriteFloat(testValue) // Operant: testValue
 	p.WriteByte(0x00)       // Opcode: end
 
-	stack := make([]byte, (int)(unsafe.Sizeof(testValue)))
-	*(*float64)(unsafe.Pointer(&stack[0])) = testValue
+	s := NewBuffer()
+	s.WriteFloat(testValue)
 
-	err := p.Run(stack[:], nil)
+	err := p.Run(s, nil)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -33,10 +32,10 @@ func TestGetFloat(t *testing.T) {
 	p.WriteByte(0x00)       // Opcode: end
 	p.WriteFloat(testValue) // Data: testValue
 
-	stack := make([]byte, (int)(unsafe.Sizeof(testValue)))
-	*(*float64)(unsafe.Pointer(&stack[0])) = testValue
+	s := NewBuffer()
+	s.WriteFloat(testValue)
 
-	err := p.Run(stack[:], nil)
+	err := p.Run(s, nil)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -53,19 +52,14 @@ func TestPutFloat(t *testing.T) {
 	p.WriteInt(testAddress) // Operant: testAddress
 	p.WriteByte(0x1A)       // Opcode: put-float
 	p.WriteByte(0x00)       // Opcode: end
-	p.WriteFloat(0)         // Data: <empty>
 
-	stack := make([]byte, 0)
+	s := NewBuffer()
 
-	memory := make([]byte, p.Size())
-	_, err := p.Read(memory)
-	if err != nil {
-		t.Errorf(err.Error())
-	}
+	m := NewBuffer()
+	m.Copy(&p.Buffer)
+	m.WriteFloat(testValue)
 
-	*(*float64)(unsafe.Pointer(&(memory[len(memory)-(int)(unsafe.Sizeof(testValue))]))) = testValue
-
-	err = p.Run(stack[:], memory[:])
+	err := p.Run(s, m)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -81,10 +75,10 @@ func TestGetFloatAddress(t *testing.T) {
 	p.WriteByte(0x00)       // Opcode: end
 	p.WriteFloat(testValue) // Data: testValue
 
-	stack := make([]byte, (int)(unsafe.Sizeof(testValue)))
-	*(*float64)(unsafe.Pointer(&stack[0])) = testValue
+	s := NewBuffer()
+	s.WriteFloat(testValue)
 
-	err := p.Run(stack[:], nil)
+	err := p.Run(s, nil)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -100,19 +94,14 @@ func TestPutFloatAddress(t *testing.T) {
 	p.WriteByte(0x2A)       // Opcode: put-float()
 	p.WriteInt(testAddress) // Operant: testAddress
 	p.WriteByte(0x00)       // Opcode: end
-	p.WriteFloat(0)         // Data: <empty>
 
-	stack := make([]byte, 0)
+	s := NewBuffer()
 
-	memory := make([]byte, p.Size())
-	_, err := p.Read(memory)
-	if err != nil {
-		t.Errorf(err.Error())
-	}
+	m := NewBuffer()
+	m.Copy(&p.Buffer)
+	m.WriteFloat(testValue)
 
-	*(*float64)(unsafe.Pointer(&(memory[len(memory)-(int)(unsafe.Sizeof(testValue))]))) = testValue
-
-	err = p.Run(stack[:], memory[:])
+	err := p.Run(s, m)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -129,11 +118,11 @@ func TestGetFloatStack(t *testing.T) {
 	p.WriteInt(testAddress) // Operant: testAddress
 	p.WriteByte(0x00)       // Opcode: end
 
-	stack := make([]byte, (int)(unsafe.Sizeof(testValue))*2)
-	*(*float64)(unsafe.Pointer(&stack[0])) = testValue
-	*(*float64)(unsafe.Pointer(uintptr(unsafe.Pointer(&stack[0])) + unsafe.Sizeof(testValue))) = testValue
+	s := NewBuffer()
+	s.WriteFloat(testValue)
+	s.WriteFloat(testValue)
 
-	err := p.Run(stack[:], nil)
+	err := p.Run(s, nil)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -152,10 +141,10 @@ func TestAddFloat(t *testing.T) {
 	p.WriteByte(0x00)        // Opcode: end
 
 	testValue3 := testValue1 + testValue2
-	stack := make([]byte, (int)(unsafe.Sizeof(testValue3)))
-	*(*float64)(unsafe.Pointer(&stack[0])) = testValue3
+	s := NewBuffer()
+	s.WriteFloat(testValue3)
 
-	err := p.Run(stack[:], nil)
+	err := p.Run(s, nil)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -174,10 +163,10 @@ func TestSubFloat(t *testing.T) {
 	p.WriteByte(0x00)        // Opcode: end
 
 	testValue3 := testValue1 - testValue2
-	stack := make([]byte, (int)(unsafe.Sizeof(testValue3)))
-	*(*float64)(unsafe.Pointer(&stack[0])) = testValue3
+	s := NewBuffer()
+	s.WriteFloat(testValue3)
 
-	err := p.Run(stack[:], nil)
+	err := p.Run(s, nil)
 	if err != nil {
 		t.Errorf(err.Error())
 	}

@@ -13,65 +13,78 @@ const STACK_SIZE = 64
 // -- Easier way to build test programs, bytes.Buffer doesn't satisfy the need --------------------------------------------------
 // Notes: May Panic. It doesn't grow beyond MEMORY_SIZE.
 
-type Program struct {
-	code [MEMORY_SIZE]byte
-	len  int
+type Buffer struct {
+	bytes [MEMORY_SIZE]byte
+	len   int
 }
 
-func (p *Program) WriteByte(value byte) (err error) {
-	if p.len+(int)(unsafe.Sizeof(value)) > len(p.code) {
+func (b *Buffer) WriteByte(value byte) (err error) {
+	if b.len+(int)(unsafe.Sizeof(value)) > len(b.bytes) {
 		return fmt.Errorf("buffer overflow")
 	}
 
-	*(*byte)(unsafe.Pointer(&p.code[p.len])) = value
-	p.len += (int)(unsafe.Sizeof(value))
+	*(*byte)(unsafe.Pointer(&b.bytes[b.len])) = value
+	b.len += (int)(unsafe.Sizeof(value))
 
 	return nil
 }
 
-func (p *Program) WriteInt(value int) (err error) {
-	if p.len+(int)(unsafe.Sizeof(value)) > len(p.code) {
+func (b *Buffer) WriteInt(value int) (err error) {
+	if b.len+(int)(unsafe.Sizeof(value)) > len(b.bytes) {
 		return fmt.Errorf("buffer overflow")
 	}
 
-	*(*int)(unsafe.Pointer(&p.code[p.len])) = value
-	p.len += (int)(unsafe.Sizeof(value))
+	*(*int)(unsafe.Pointer(&b.bytes[b.len])) = value
+	b.len += (int)(unsafe.Sizeof(value))
 
 	return nil
 }
 
-func (p *Program) WriteFloat(value float64) (err error) {
-	if p.len+(int)(unsafe.Sizeof(value)) > len(p.code) {
+func (b *Buffer) WriteFloat(value float64) (err error) {
+	if b.len+(int)(unsafe.Sizeof(value)) > len(b.bytes) {
 		return fmt.Errorf("buffer overflow")
 	}
 
-	*(*float64)(unsafe.Pointer(&p.code[p.len])) = value
-	p.len += (int)(unsafe.Sizeof(value))
+	*(*float64)(unsafe.Pointer(&b.bytes[b.len])) = value
+	b.len += (int)(unsafe.Sizeof(value))
 
 	return nil
 }
 
-func (p *Program) Read(buffer []byte) (size int, err error) {
-	if len(buffer) < p.len {
+func (b *Buffer) Copy(buffer *Buffer) (size int, err error) {
+	if len(b.bytes) < buffer.len {
 		return 0, fmt.Errorf("buffer too small")
 	}
 
-	copy(buffer, p.code[:p.len])
+	copy(b.bytes[:buffer.len], buffer.bytes[:buffer.len])
+	b.len = buffer.len
 
-	return p.len, nil
+	return b.len, nil
 }
 
-func (p *Program) Size() (size int) {
-	return p.len
+func (b *Buffer) Value() (bytes []byte) {
+	return b.bytes[:b.len]
 }
 
-func (p *Program) Run(expectedStack []byte, expectedMemory []byte) (err error) {
+func (b *Buffer) Size() (size int) {
+	return b.len
+}
+
+func NewBuffer() (buffer *Buffer) {
+	return new(Buffer)
+}
+
+type Program struct {
+	Buffer
+}
+
+func (p *Program) Run(expectedStack *Buffer, expectedMemory *Buffer) (err error) {
 	vm, err := NewVirtualMachine(MEMORY_SIZE, STACK_SIZE)
 	if err != nil {
 		return err
 	}
 
-	err = vm.Load(p.code[:p.len])
+	err = vm.Load(p.bytes[:p.len])
 	if err != nil {
 		return err
 	}
@@ -82,14 +95,14 @@ func (p *Program) Run(expectedStack []byte, expectedMemory []byte) (err error) {
 	}
 
 	if expectedStack != nil {
-		err = vm.stack.Check(expectedStack)
+		err = vm.stack.Check(expectedStack.Value())
 		if err != nil {
 			return err
 		}
 	}
 
 	if expectedMemory != nil {
-		err = vm.memory.Check(expectedMemory)
+		err = vm.memory.Check(expectedMemory.Value())
 		if err != nil {
 			return err
 		}
