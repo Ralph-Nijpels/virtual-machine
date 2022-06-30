@@ -29,9 +29,9 @@ To train my low-level skills a bit, I've choosen to implement a virtual machine
 | [x]  | 0x29   | put-int    (nn) | stores an int from stack into memory                                                      |
 | [x]  | 0x2A   | put-float  (nn) | stores a float from stack into memory                                                     |
 |      |        |                 |                                                                                           |
-| [ ]  | 0x30   | get-byte   {nn} | pushes a byte from an address relative to the stackpointer on top of the stack            |
-| [ ]  | 0x31   | get-int    {nn} | pushes an int from an address relative to the stackpointer on top of the stack            |
-| [ ]  | 0x32   | get-float  {nn} | pushes a float from an address relative to the stackpointer on top of the stack           |
+| [x]  | 0x30   | get-byte   {nn} | pushes a byte from an address relative to the stackpointer on top of the stack            |
+| [x]  | 0x31   | get-int    {nn} | pushes an int from an address relative to the stackpointer on top of the stack            |
+| [x]  | 0x32   | get-float  {nn} | pushes a float from an address relative to the stackpointer on top of the stack           |
 |      |        |                 |                                                                                           |
 | [ ]  | 0x38   | put-byte   {nn} | pops a byte from the stack and stores it in address relative to the stackpointer          |
 | [ ]  | 0x39   | put-int    {nn} | pops an int from the stack and stores it in address relative to the stackpointer          |

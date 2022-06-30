@@ -118,6 +118,27 @@ func TestPutFloatAddress(t *testing.T) {
 	}
 }
 
+func TestGetFloatStack(t *testing.T) {
+	testAddress := int(-8)
+	testValue := float64(123.45)
+
+	p := NewProgram()
+	p.WriteByte(0x0A)       // Opcode: push-float
+	p.WriteFloat(testValue) // Operant: testValue
+	p.WriteByte(0x32)       // Opcode: get-float{}
+	p.WriteInt(testAddress) // Operant: testAddress
+	p.WriteByte(0x00)       // Opcode: end
+
+	stack := make([]byte, (int)(unsafe.Sizeof(testValue))*2)
+	*(*float64)(unsafe.Pointer(&stack[0])) = testValue
+	*(*float64)(unsafe.Pointer(uintptr(unsafe.Pointer(&stack[0])) + unsafe.Sizeof(testValue))) = testValue
+
+	err := p.Run(stack[:], nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}
+
 func TestAddFloat(t *testing.T) {
 	testValue1 := float64(123.50)
 	testValue2 := float64(-12.34)

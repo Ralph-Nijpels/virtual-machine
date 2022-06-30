@@ -80,7 +80,7 @@ func (vm *VirtualMachine) Step() (bool, error) {
 		return true, nil
 	}
 	if vm.jumpTable[opCode] == nil {
-		return true, fmt.Errorf("opcode error")
+		return true, fmt.Errorf("opcode %0x unknown", opCode)
 	}
 
 	// Execute operation
@@ -133,6 +133,9 @@ func NewVirtualMachine(memorySize int, stackSize int) (vm *VirtualMachine, err e
 	vm.jumpTable[0x28] = vm.operationPutByteAddress
 	vm.jumpTable[0x29] = vm.operationPutIntAddress
 	vm.jumpTable[0x2A] = vm.operationPutFloatAddress
+	vm.jumpTable[0x30] = vm.operationGetByteStack
+	vm.jumpTable[0x31] = vm.operationGetIntStack
+	vm.jumpTable[0x32] = vm.operationGetFloatStack
 	vm.jumpTable[0x40] = vm.operationAddByte
 	vm.jumpTable[0x41] = vm.operationAddInt
 	vm.jumpTable[0x42] = vm.operationAddFloat

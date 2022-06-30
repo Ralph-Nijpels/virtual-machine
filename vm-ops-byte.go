@@ -66,6 +66,29 @@ func (vm *VirtualMachine) operationGetByteAddress() (err error) {
 	return nil
 }
 
+// operationGetByteStack takes an address and pushes the byte from the memory-address (sp + operant)
+func (vm *VirtualMachine) operationGetByteStack() (err error) {
+	operant, err := vm.memory.GetInt(vm.programPointer + 1)
+	if err != nil {
+		return err
+	}
+
+	value, err := vm.stack.GetByte(operant)
+	if err != nil {
+		return err
+	}
+
+	err = vm.stack.PushByte(value)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer += 1 + (int)(unsafe.Sizeof(operant))
+
+	vm.addLog("get-byte {%d}", operant)
+	return nil
+}
+
 // operationPutByte pops an address and pops a byte into that memory-address
 func (vm *VirtualMachine) operationPutByte() (err error) {
 	address, err := vm.stack.PopInt()

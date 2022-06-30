@@ -118,6 +118,27 @@ func TestPutIntAddress(t *testing.T) {
 	}
 }
 
+func TestGetIntStack(t *testing.T) {
+	testAddress := int(-8)
+	testValue := int(-332)
+
+	p := NewProgram()
+	p.WriteByte(0x09)       // Opcode: push-int
+	p.WriteInt(testValue)   // Operant: testValue
+	p.WriteByte(0x31)       // Opcode: get-int{}
+	p.WriteInt(testAddress) // Operant: testAddress
+	p.WriteByte(0x00)       // Opcode: end
+
+	stack := make([]byte, (int)(unsafe.Sizeof(testValue))*2)
+	*(*int)(unsafe.Pointer(&stack[0])) = testValue
+	*(*int)(unsafe.Pointer(uintptr(unsafe.Pointer(&stack[0])) + unsafe.Sizeof(testValue))) = testValue
+
+	err := p.Run(stack[:], nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}
+
 func TestAddInt(t *testing.T) {
 	testValue1 := int(0x04)
 	testValue2 := int(0x06)

@@ -40,6 +40,20 @@ func (st *Stack) PushByte(value byte) (err error) {
 	return nil
 }
 
+// GetByte returns a byte relative to the stack-pointer
+func (st *Stack) GetByte(offset int) (value byte, err error) {
+	if st.overflow || st.underflow {
+		return 0, fmt.Errorf("blocked")
+	}
+
+	value, err = st.mem.GetByte(st.offset + st.pointer + offset)
+	if err != nil {
+		return 0, err
+	}
+
+	return value, nil
+}
+
 // PopByte removes a byte from the stack
 func (st *Stack) PopByte() (value byte, err error) {
 	if st.overflow || st.underflow {
@@ -84,6 +98,20 @@ func (st *Stack) PushInt(value int) (err error) {
 	return nil
 }
 
+// GetInt returns an int relative to the stack-pointer
+func (st *Stack) GetInt(offset int) (value int, err error) {
+	if st.overflow || st.underflow {
+		return 0, fmt.Errorf("blocked")
+	}
+
+	value, err = st.mem.GetInt(st.offset + st.pointer + offset)
+	if err != nil {
+		return 0, err
+	}
+
+	return value, nil
+}
+
 // PopInt removes an int from the stack
 func (st *Stack) PopInt() (value int, err error) {
 	if st.overflow || st.underflow {
@@ -125,6 +153,20 @@ func (st *Stack) PushFloat(value float64) (err error) {
 
 	st.pointer += size
 	return nil
+}
+
+// GetFloat returns a float relative to the stack-pointer
+func (st *Stack) GetFloat(offset int) (value float64, err error) {
+	if st.overflow || st.underflow {
+		return 0, fmt.Errorf("blocked")
+	}
+
+	value, err = st.mem.GetFloat(st.offset + st.pointer + offset)
+	if err != nil {
+		return 0, err
+	}
+
+	return value, nil
 }
 
 func (st *Stack) PopFloat() (result float64, err error) {

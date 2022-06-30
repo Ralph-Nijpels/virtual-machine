@@ -112,6 +112,29 @@ func (vm *VirtualMachine) operationPutFloatAddress() (err error) {
 	return nil
 }
 
+// operationGetFloatStack takes an offset operant and pushes the float from the memory-address stack-pointer + offset
+func (vm *VirtualMachine) operationGetFloatStack() (err error) {
+	operant, err := vm.memory.GetInt(vm.programPointer + 1)
+	if err != nil {
+		return err
+	}
+
+	value, err := vm.stack.GetFloat(operant)
+	if err != nil {
+		return err
+	}
+
+	err = vm.stack.PushFloat(value)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer += 1 + (int)(unsafe.Sizeof(operant))
+
+	vm.addLog("get-float {%d}", operant)
+	return nil
+}
+
 // operationAddFloat takes 2 floats from the stack, adds them and pushes the result
 func (vm *VirtualMachine) operationAddFloat() error {
 	operant1, err := vm.stack.PopFloat()
