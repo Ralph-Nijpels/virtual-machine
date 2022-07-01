@@ -15,6 +15,16 @@ func (st *Stack) isBlocked() error {
 		return fmt.Errorf("PushByte open")
 	}
 
+	_, err = st.GetByte(0)
+	if err.Error() != "blocked" {
+		return fmt.Errorf("GetByte open")
+	}
+
+	err = st.PutByte(0, 0)
+	if err.Error() != "blocked" {
+		return fmt.Errorf("PutByte open")
+	}
+
 	_, err = st.PopByte()
 	if err.Error() != "blocked" {
 		return fmt.Errorf("PopByte open")
@@ -25,6 +35,16 @@ func (st *Stack) isBlocked() error {
 		return fmt.Errorf("PushInt open")
 	}
 
+	_, err = st.GetInt(0)
+	if err.Error() != "blocked" {
+		return fmt.Errorf("GetInt open")
+	}
+
+	err = st.PutInt(0, 0)
+	if err.Error() != "blocked" {
+		return fmt.Errorf("GetInt open")
+	}
+
 	_, err = st.PopInt()
 	if err.Error() != "blocked" {
 		return fmt.Errorf("PopInt open")
@@ -33,6 +53,16 @@ func (st *Stack) isBlocked() error {
 	err = st.PushFloat(12.50)
 	if err.Error() != "blocked" {
 		return fmt.Errorf("PushFloat open")
+	}
+
+	_, err = st.GetFloat(0)
+	if err.Error() != "blocked" {
+		return fmt.Errorf("GetFloat open")
+	}
+
+	err = st.PutFloat(0, 0.0)
+	if err.Error() != "blocked" {
+		return fmt.Errorf("PutFloat open")
 	}
 
 	_, err = st.PopFloat()

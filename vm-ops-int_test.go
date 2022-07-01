@@ -128,6 +128,28 @@ func TestGetIntStack(t *testing.T) {
 	}
 }
 
+func TestPutIntStack(t *testing.T) {
+	testAddress := int(-8)
+	testValue := int(-332)
+
+	p := NewProgram()
+	p.WriteByte(0x09)       // Opcode: push-int
+	p.WriteInt(0)           // Operant: <empty>
+	p.WriteByte(0x09)       // Opcode: push-int
+	p.WriteInt(testValue)   // Operant: testValue
+	p.WriteByte(0x39)       // Opcode: put-int{}
+	p.WriteInt(testAddress) // Operant: testAddress
+	p.WriteByte(0x00)       // Opcode: end
+
+	s := NewBuffer()
+	s.WriteInt(testValue)
+
+	err := p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}
+
 func TestAddInt(t *testing.T) {
 	testValue1 := int(0x04)
 	testValue2 := int(0x06)

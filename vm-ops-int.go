@@ -131,7 +131,30 @@ func (vm *VirtualMachine) operationGetIntStack() (err error) {
 
 	vm.programPointer += 1 + (int)(unsafe.Sizeof(operant))
 
-	vm.addLog("get-int (%d)", operant)
+	vm.addLog("get-int {%d}", operant)
+	return nil
+}
+
+// operationPutIntStack takes an offset and pops a int to the memory-address (stack-pointer + opperant)
+func (vm *VirtualMachine) operationPutIntStack() (err error) {
+	operant, err := vm.memory.GetInt(vm.programPointer + 1)
+	if err != nil {
+		return err
+	}
+
+	value, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	err = vm.stack.PutInt(operant, value)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer += 1 + (int)(unsafe.Sizeof(operant))
+
+	vm.addLog("put-int {%d}", operant)
 	return nil
 }
 

@@ -130,6 +130,28 @@ func TestGetByteStack(t *testing.T) {
 	}
 }
 
+func TestPutByteStack(t *testing.T) {
+	testAddress := int(-1)
+	testValue := byte(0x91)
+
+	p := NewProgram()
+	p.WriteByte(0x08)       // Opcode: push-byte
+	p.WriteByte(0x00)       // Operant: <empty>
+	p.WriteByte(0x08)       // Opcode: push-byte
+	p.WriteByte(testValue)  // Operant: testValue
+	p.WriteByte(0x38)       // Opcode: put-byte{}
+	p.WriteInt(testAddress) // Operant: testAddress
+	p.WriteByte(0x00)       // Opcode: end
+
+	s := NewBuffer()
+	s.WriteByte(testValue)
+
+	err := p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}
+
 func TestAddByte(t *testing.T) {
 	testValue1 := byte(0x04)
 	testValue2 := byte(0x06)

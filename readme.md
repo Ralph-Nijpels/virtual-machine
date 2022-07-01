@@ -33,9 +33,9 @@ To train my low-level skills a bit, I've choosen to implement a virtual machine
 | [x]  | 0x31   | get-int    {nn} | pushes an int from an address relative to the stackpointer on top of the stack            |
 | [x]  | 0x32   | get-float  {nn} | pushes a float from an address relative to the stackpointer on top of the stack           |
 |      |        |                 |                                                                                           |
-| [ ]  | 0x38   | put-byte   {nn} | pops a byte from the stack and stores it in address relative to the stackpointer          |
-| [ ]  | 0x39   | put-int    {nn} | pops an int from the stack and stores it in address relative to the stackpointer          |
-| [ ]  | 0x3A   | put-float  {nn} | pops a float from the stack and stores it in address relative to the stackpointer         |
+| [x]  | 0x38   | put-byte   {nn} | pops a byte from the stack and stores it in address relative to the stackpointer          |
+| [x]  | 0x39   | put-int    {nn} | pops an int from the stack and stores it in address relative to the stackpointer          |
+| [x]  | 0x3A   | put-float  {nn} | pops a float from the stack and stores it in address relative to the stackpointer         |
 |      |        |                 |                                                                                           |
 | [x]  | 0x40   | add-byte        | adds the two topmost bytes on stack                                                       |
 | [x]  | 0x41   | add-int         | adds the two topmost ints on stack                                                        |

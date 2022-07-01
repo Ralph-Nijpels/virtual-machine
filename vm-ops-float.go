@@ -135,6 +135,29 @@ func (vm *VirtualMachine) operationGetFloatStack() (err error) {
 	return nil
 }
 
+// operationPutFloatStack takes an offset operant and pops a float into the memory-address (stack-pointer + offset)
+func (vm *VirtualMachine) operationPutFloatStack() (err error) {
+	operant, err := vm.memory.GetInt(vm.programPointer + 1)
+	if err != nil {
+		return err
+	}
+
+	value, err := vm.stack.PopFloat()
+	if err != nil {
+		return err
+	}
+
+	err = vm.stack.PutFloat(operant, value)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer += 1 + (int)(unsafe.Sizeof(operant))
+
+	vm.addLog("put-float {%d}", operant)
+	return nil
+}
+
 // operationAddFloat takes 2 floats from the stack, adds them and pushes the result
 func (vm *VirtualMachine) operationAddFloat() error {
 	operant1, err := vm.stack.PopFloat()
