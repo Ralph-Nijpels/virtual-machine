@@ -4,7 +4,7 @@ To train my low-level skills a bit, I've choosen to implement a virtual machine
 # Refactoring to-do
 - [ ] Implement short rather than byte opcodes. We are going to run out of opcodes if we want to implement strings
 - [x] Implement get-xxx / put-xxx using an address from stack. Needed to allow for calculated addresses if we want to implement strings and arrays
-- [ ] Implement get-xxx / put-xxx using an address relative to the stack-pointer. Needed to create stack-frames to implement call/return 
+- [x] Implement get-xxx / put-xxx using an address relative to the stack-pointer. Needed to create stack-frames to implement call/return 
 
 # Plan for the Opcodes
 | Done | Opcode | Mnemonic        | Description                                                                               |
@@ -49,21 +49,54 @@ To train my low-level skills a bit, I've choosen to implement a virtual machine
 | [x]  | 0x49   | mul-int         | multiplies the two topmost ints on stack                                                  |
 | [x]  | 0x4A   | mul-float       | multiplies the two topmost floats on stack                                                |
 |      |        |                 |                                                                                           |
-| [ ]  | 0x50   | div-byte        | divides the two topmost bytes on stack                                                    |
-| [ ]  | 0x51   | div-int         | divides the two topmost ints on stack                                                     |
-| [ ]  | 0x52   | div-float       | divides the two topmost floats on stack                                                   |
+| [x]  | 0x4C   | div-byte        | divides the two topmost bytes on stack                                                    |
+| [x]  | 0x4D   | div-int         | divides the two topmost ints on stack                                                     |
+| [x]  | 0x4E   | div-float       | divides the two topmost floats on stack                                                   |
 |      |        |                 |                                                                                           |
-| [ ]  |        | equal-byte      |                                                                                           |
+|      |        |                 | some intentional open space in the opcode table                                           |
 |      |        |                 |                                                                                           |
-| [ ]  |        | unequal-byte    |                                                                                           |
+| [ ]  | 0x60   | equal-byte      | compares the topmost two bytes on stack, pushes byte(-1) if equal and 0 otherwise         |
+| [ ]  | 0x61   | equal-int       | compares the topmost two ints on stack, pushes byte(-1) if equal and 0 otherwise          |
+| [ ]  | 0x62   | equal-float     | compares the topmost two floats on stack, pushes byte(-1) if equal and 0 otherwise        |
 |      |        |                 |                                                                                           |
-| [ ]  |        | greater-byte    |                                                                                           |
+| [ ]  | 0x64   | unequal-byte    | compares the topmost two bytes on stack, pushes byte(-1) if unequal and 0 otherwise       |
+| [ ]  | 0x65   | unequal-int     | compares the topmost two ints on stack, pushes byte(-1) if unequal and 0 otherwise        |
+| [ ]  | 0x66   | unequal-float   | compares the topmost two floats on stack, pushes byte(-1) if unequal and 0 otherwise      |
 |      |        |                 |                                                                                           |
-| [ ]  |        | smaller-byte    |                                                                                           |
+| [ ]  | 0x68   | greater-byte    |                                                                                           |
+| [ ]  | 0x69   | greater-int     |                                                                                           |
+| [ ]  | 0x6A   | greater-float   |                                                                                           |
 |      |        |                 |                                                                                           |
-| [ ]  |        | and-byte        |                                                                                           |
+| [ ]  | 0x6C   | smaller-byte    |                                                                                           |
+| [ ]  | 0x6D   | smaller-int     |                                                                                           |
+| [ ]  | 0x6E   | smaller-Float   |                                                                                           |
 |      |        |                 |                                                                                           |
-| [ ]  |        | or-byte         |                                                                                           |
+| [ ]  | 0x70   | and-byte        |                                                                                           |
+| [ ]  | 0x71   | and-int         |                                                                                           |
 |      |        |                 |                                                                                           |
+| [ ]  | 0x74   | or-byte         |                                                                                           |
+| [ ]  | 0x75   | or-int          |                                                                                           |
+|      |        |                 |                                                                                           |
+| [ ]  | 0x78   | not-byte        |                                                                                           |
+| [ ]  | 0x79   | not-int         |                                                                                           |
+|      |        |                 |                                                                                           |
+| [ ]  | 0x7C   | xor-byte        |                                                                                           |
+| [ ]  | 0x7D   | xor-int         |                                                                                           |
+|      |        |                 |                                                                                           |
+| [ ]  | 0xF0   | jmp             | address from stack (equivalent to ret)                                                    |
+| [ ]  | 0xF1   | jmp        (nn) | direct address                                                                            |
+|      |        |                 |                                                                                           |
+| [ ]  | 0xF4   | jmpz-byte       |                                                                                           |
+| [ ]  | 0xF5   | jmpz-int        |                                                                                           |
+| [ ]  | 0xF6   | jmpz-byte  (nn) |                                                                                           |
+| [ ]  | 0xF7   | jmpz-int   (nn) |                                                                                           |
+|      |        |                 |                                                                                           |
+| [ ]  | 0xF8   | jmpnz-byte      |                                                                                           |
+| [ ]  | 0xF9   | jmpnz-int       |                                                                                           |
+| [ ]  | 0xFA   | jmpnz-byte (nn) |                                                                                           |
+| [ ]  | 0xFB   | jmpnz-int  (nn) |                                                                                           |
+|      |        |                 |                                                                                           |
+| [ ]  | 0xFC   | call            | address from stack                                                                        |
+| [ ]  | 0xFD   | call       (nn) |                                                                                           |
 
 
