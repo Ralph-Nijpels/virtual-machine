@@ -47,11 +47,11 @@ To train my low-level skills a bit, I've choosen to implement a virtual machine
 |      |        |                 |                                                                                           |
 | [x]  | 0x48   | mul-byte        | multiplies the two topmost bytes on stack                                                 |
 | [x]  | 0x49   | mul-int         | multiplies the two topmost ints on stack                                                  |
-| [x]  | 0x4A   | mul-float       |                                                                                           |
+| [x]  | 0x4A   | mul-float       | multiplies the two topmost floats on stack                                                |
 |      |        |                 |                                                                                           |
-| [ ]  |        | div-byte        |                                                                                           |
-| [ ]  |        | div-byte        |                                                                                           |
-| [ ]  |        | div-byte        |                                                                                           |
+| [ ]  | 0x50   | div-byte        | divides the two topmost bytes on stack                                                    |
+| [ ]  | 0x51   | div-int         | divides the two topmost ints on stack                                                     |
+| [ ]  | 0x52   | div-float       | divides the two topmost floats on stack                                                   |
 |      |        |                 |                                                                                           |
 | [ ]  |        | equal-byte      |                                                                                           |
 |      |        |                 |                                                                                           |

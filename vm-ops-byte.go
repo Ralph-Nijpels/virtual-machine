@@ -226,3 +226,26 @@ func (vm *VirtualMachine) operationMulByte() (err error) {
 	vm.addLog("mul-byte")
 	return nil
 }
+
+// operationDivByte takes 2 bytes from the stack, divides them and pushes the result
+func (vm *VirtualMachine) operationDivByte() (err error) {
+	operant1, err := vm.stack.PopByte()
+	if err != nil {
+		return err
+	}
+
+	operant2, err := vm.stack.PopByte()
+	if err != nil {
+		return err
+	}
+
+	err = vm.stack.PushByte(operant2 / operant1)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer++
+
+	vm.addLog("div-byte")
+	return nil
+}

@@ -226,3 +226,26 @@ func (vm *VirtualMachine) operationMulFloat() (err error) {
 	vm.addLog("mul-float")
 	return nil
 }
+
+// operationDivFloat takes 2 floats from the stack, divides them and pushes the result
+func (vm *VirtualMachine) operationDivFloat() (err error) {
+	operant1, err := vm.stack.PopFloat()
+	if err != nil {
+		return err
+	}
+
+	operant2, err := vm.stack.PopFloat()
+	if err != nil {
+		return err
+	}
+
+	err = vm.stack.PushFloat(operant2 / operant1)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer++
+
+	vm.addLog("div-float")
+	return nil
+}

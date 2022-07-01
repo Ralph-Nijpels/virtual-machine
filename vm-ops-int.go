@@ -204,7 +204,7 @@ func (vm *VirtualMachine) operationSubInt() (err error) {
 	return nil
 }
 
-// operationSubInt takes 2 ints from the stack, subtracts them and pushes the result
+// operationSubInt takes 2 ints from the stack, multiplies them and pushes the result
 func (vm *VirtualMachine) operationMulInt() (err error) {
 	operant1, err := vm.stack.PopInt()
 	if err != nil {
@@ -224,5 +224,28 @@ func (vm *VirtualMachine) operationMulInt() (err error) {
 	vm.programPointer++
 
 	vm.addLog("mul-int")
+	return nil
+}
+
+// operationSubInt takes 2 ints from the stack, divides them and pushes the result
+func (vm *VirtualMachine) operationDivInt() (err error) {
+	operant1, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	operant2, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	err = vm.stack.PushInt(operant2 / operant1)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer++
+
+	vm.addLog("div-int")
 	return nil
 }
