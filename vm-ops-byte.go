@@ -203,3 +203,26 @@ func (vm *VirtualMachine) operationSubByte() (err error) {
 	vm.addLog("sub-byte")
 	return nil
 }
+
+// operationMulByte takes 2 bytes from the stack, multiplies them and pushes the result
+func (vm *VirtualMachine) operationMulByte() (err error) {
+	operant1, err := vm.stack.PopByte()
+	if err != nil {
+		return err
+	}
+
+	operant2, err := vm.stack.PopByte()
+	if err != nil {
+		return err
+	}
+
+	err = vm.stack.PushByte(operant2 * operant1)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer++
+
+	vm.addLog("mul-byte")
+	return nil
+}

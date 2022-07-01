@@ -203,3 +203,26 @@ func (vm *VirtualMachine) operationSubFloat() (err error) {
 	vm.addLog("sub-float")
 	return nil
 }
+
+// operationMulFloat takes 2 floats from the stack, multiplies them and pushes the result
+func (vm *VirtualMachine) operationMulFloat() (err error) {
+	operant1, err := vm.stack.PopFloat()
+	if err != nil {
+		return err
+	}
+
+	operant2, err := vm.stack.PopFloat()
+	if err != nil {
+		return err
+	}
+
+	err = vm.stack.PushFloat(operant2 * operant1)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer++
+
+	vm.addLog("mul-float")
+	return nil
+}

@@ -200,6 +200,29 @@ func (vm *VirtualMachine) operationSubInt() (err error) {
 
 	vm.programPointer++
 
-	vm.addLog("add-int")
+	vm.addLog("sub-int")
+	return nil
+}
+
+// operationSubInt takes 2 ints from the stack, subtracts them and pushes the result
+func (vm *VirtualMachine) operationMulInt() (err error) {
+	operant1, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	operant2, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	err = vm.stack.PushInt(operant2 * operant1)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer++
+
+	vm.addLog("mul-int")
 	return nil
 }

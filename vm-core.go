@@ -100,6 +100,7 @@ func (vm *VirtualMachine) Run() error {
 	if err != nil {
 		return err
 	}
+	vm.addLog("<start program>")
 
 	// Keep stepping until done
 	atEnd, err := vm.Step()
@@ -107,6 +108,7 @@ func (vm *VirtualMachine) Run() error {
 		atEnd, err = vm.Step()
 	}
 
+	vm.addLog("<end program>")
 	vm.showLog()
 	return err
 }
@@ -142,9 +144,12 @@ func NewVirtualMachine(memorySize int, stackSize int) (vm *VirtualMachine, err e
 	vm.jumpTable[0x40] = vm.operationAddByte
 	vm.jumpTable[0x41] = vm.operationAddInt
 	vm.jumpTable[0x42] = vm.operationAddFloat
-	vm.jumpTable[0x48] = vm.operationSubByte
-	vm.jumpTable[0x49] = vm.operationSubInt
-	vm.jumpTable[0x4A] = vm.operationSubFloat
+	vm.jumpTable[0x44] = vm.operationSubByte
+	vm.jumpTable[0x45] = vm.operationSubInt
+	vm.jumpTable[0x46] = vm.operationSubFloat
+	vm.jumpTable[0x48] = vm.operationMulByte
+	vm.jumpTable[0x49] = vm.operationMulInt
+	vm.jumpTable[0x4A] = vm.operationMulFloat
 
 	// Build the resources
 	vm.memory = NewMemory(memorySize)

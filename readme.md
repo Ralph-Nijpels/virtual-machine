@@ -41,12 +41,16 @@ To train my low-level skills a bit, I've choosen to implement a virtual machine
 | [x]  | 0x41   | add-int         | adds the two topmost ints on stack                                                        |
 | [x]  | 0x42   | add-float       | adds the two topmost floats on the stack                                                  |
 |      |        |                 |                                                                                           |
-| [x]  | 0x48   | sub-byte        | subtracts the two topmost bytes on stack                                                  |
-| [x]  | 0x49   | sub-int         | subtracts the two topmost ints on stack                                                   |
-| [x]  | 0x4A   | sub-float       | subtracts the two topmost floats on stack                                                 |
+| [x]  | 0x44   | sub-byte        | subtracts the two topmost bytes on stack                                                  |
+| [x]  | 0x45   | sub-int         | subtracts the two topmost ints on stack                                                   |
+| [x]  | 0x46   | sub-float       | subtracts the two topmost floats on stack                                                 |
 |      |        |                 |                                                                                           |
-| [ ]  |        | mul-byte        |                                                                                           |
+| [x]  | 0x48   | mul-byte        | multiplies the two topmost bytes on stack                                                 |
+| [x]  | 0x49   | mul-int         | multiplies the two topmost ints on stack                                                  |
+| [x]  | 0x4A   | mul-float       |                                                                                           |
 |      |        |                 |                                                                                           |
+| [ ]  |        | div-byte        |                                                                                           |
+| [ ]  |        | div-byte        |                                                                                           |
 | [ ]  |        | div-byte        |                                                                                           |
 |      |        |                 |                                                                                           |
 | [ ]  |        | equal-byte      |                                                                                           |

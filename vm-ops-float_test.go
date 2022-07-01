@@ -181,10 +181,32 @@ func TestSubFloat(t *testing.T) {
 	p.WriteFloat(testValue1) // Operant: testValue1
 	p.WriteByte(0x0A)        // Opcode: push-float
 	p.WriteFloat(testValue2) // Operant: testValue2
-	p.WriteByte(0x4A)        // Opcode: sub-float
+	p.WriteByte(0x46)        // Opcode: sub-float
 	p.WriteByte(0x00)        // Opcode: end
 
 	testValue3 := testValue1 - testValue2
+	s := NewBuffer()
+	s.WriteFloat(testValue3)
+
+	err := p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}
+
+func TestMulFloat(t *testing.T) {
+	testValue1 := float64(123.50)
+	testValue2 := float64(-12.34)
+
+	p := NewProgram()
+	p.WriteByte(0x0A)        // Opcode: push-float
+	p.WriteFloat(testValue1) // Operant: testValue1
+	p.WriteByte(0x0A)        // Opcode: push-float
+	p.WriteFloat(testValue2) // Operant: testValue2
+	p.WriteByte(0x4A)        // Opcode: mul-float
+	p.WriteByte(0x00)        // Opcode: end
+
+	testValue3 := testValue1 * testValue2
 	s := NewBuffer()
 	s.WriteFloat(testValue3)
 

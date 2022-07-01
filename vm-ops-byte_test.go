@@ -183,10 +183,32 @@ func TestSubByte(t *testing.T) {
 	p.WriteByte(testValue1) // Operant: testValue1
 	p.WriteByte(0x08)       // Opcode: push-byte
 	p.WriteByte(testValue2) // Operant: testValue2
-	p.WriteByte(0x48)       // Opcode: sub-byte
+	p.WriteByte(0x44)       // Opcode: sub-byte
 	p.WriteByte(0x00)       // Opcode: end
 
 	testValue3 := testValue1 - testValue2
+	s := NewBuffer()
+	s.WriteByte(testValue3)
+
+	err := p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}
+
+func TestMulByte(t *testing.T) {
+	testValue1 := byte(0x04)
+	testValue2 := byte(0x06)
+
+	p := NewProgram()
+	p.WriteByte(0x08)       // Opcode: push-byte
+	p.WriteByte(testValue1) // Operant: testValue1
+	p.WriteByte(0x08)       // Opcode: push-byte
+	p.WriteByte(testValue2) // Operant: testValue2
+	p.WriteByte(0x48)       // Opcode: sub-byte
+	p.WriteByte(0x00)       // Opcode: end
+
+	testValue3 := testValue1 * testValue2
 	s := NewBuffer()
 	s.WriteByte(testValue3)
 

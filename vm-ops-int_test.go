@@ -181,10 +181,32 @@ func TestSubInt(t *testing.T) {
 	p.WriteInt(testValue1) // Operant: testValue1
 	p.WriteByte(0x09)      // Opcode: push-int
 	p.WriteInt(testValue2) // Operant: testValue2
-	p.WriteByte(0x49)      // Opcode: sub-int
+	p.WriteByte(0x45)      // Opcode: sub-int
 	p.WriteByte(0x00)      // Opcode: end
 
 	testValue3 := testValue1 - testValue2
+	s := NewBuffer()
+	s.WriteInt(testValue3)
+
+	err := p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}
+
+func TestMulInt(t *testing.T) {
+	testValue1 := int(12)
+	testValue2 := int(6)
+
+	p := NewProgram()
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue1) // Operant: testValue1
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue2) // Operant: testValue2
+	p.WriteByte(0x49)      // Opcode: sub-int
+	p.WriteByte(0x00)      // Opcode: end
+
+	testValue3 := testValue1 * testValue2
 	s := NewBuffer()
 	s.WriteInt(testValue3)
 
