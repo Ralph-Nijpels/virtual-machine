@@ -249,3 +249,31 @@ func (vm *VirtualMachine) operationDivByte() (err error) {
 	vm.addLog("div-byte")
 	return nil
 }
+
+// operationEqualByte takes 2 bytes from the stack, pushes -1 if equal, 0 if not
+func (vm *VirtualMachine) operationEqualByte() (err error) {
+	operant1, err := vm.stack.PopByte()
+	if err != nil {
+		return err
+	}
+
+	operant2, err := vm.stack.PopByte()
+	if err != nil {
+		return err
+	}
+
+	result := byte(0x00)
+	if operant1 == operant2 {
+		result = byte(0xFF)
+	}
+
+	err = vm.stack.PushByte(result)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer++
+
+	vm.addLog("equal-byte")
+	return nil
+}

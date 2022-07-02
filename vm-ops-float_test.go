@@ -237,3 +237,41 @@ func TestDivFloat(t *testing.T) {
 		t.Errorf(err.Error())
 	}
 }
+
+func TestEqualFloat(t *testing.T) {
+	testValue1 := float64(12.34)
+	testValue2 := float64(12.34) // should be equal
+	testValue3 := float64(0.0)   // should not be equal
+
+	p := NewProgram()
+	p.WriteByte(0x0A)        // Opcode: push-float
+	p.WriteFloat(testValue1) // Operant: testValue1
+	p.WriteByte(0x0A)        // Opcode: push-float
+	p.WriteFloat(testValue2) // Operant: testValue2
+	p.WriteByte(0x62)        // Opcode: equal-float
+	p.WriteByte(0x00)        // Opcode: end
+
+	s := NewBuffer()
+	s.WriteByte(byte(0xFF)) // true
+
+	err := p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x0A)        // Opcode: push-float
+	p.WriteFloat(testValue1) // Operant: testValue1
+	p.WriteByte(0x0A)        // Opcode: push-float
+	p.WriteFloat(testValue3) // Operant: testValue3
+	p.WriteByte(0x62)        // Opcode: equal-float
+	p.WriteByte(0x00)        // Opcode: end
+
+	s = NewBuffer()
+	s.WriteByte(byte(0x00)) // false
+
+	err = p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}
