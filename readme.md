@@ -55,13 +55,13 @@ To train my low-level skills a bit, I've choosen to implement a virtual machine
 |      |        |                  |                                                                                           |
 |      |        |                  | some intentional open space in the opcode table                                           |
 |      |        |                  |                                                                                           |
-| [x]  | 0x60   | equal-byte       | compares the topmost two bytes on stack, pushes byte(-1) if equal and 0 otherwise         |
-| [x]  | 0x61   | equal-int        | compares the topmost two ints on stack, pushes byte(-1) if equal and 0 otherwise          |
-| [x]  | 0x62   | equal-float      | compares the topmost two floats on stack, pushes byte(-1) if equal and 0 otherwise        |
+| [x]  | 0x60   | equal-byte       | compares the topmost two bytes on stack, pushes byte(FF) if equal and 0 otherwise         |
+| [x]  | 0x61   | equal-int        | compares the topmost two ints on stack, pushes byte(FF) if equal and 0 otherwise          |
+| [x]  | 0x62   | equal-float      | compares the topmost two floats on stack, pushes byte(FF) if equal and 0 otherwise        |
 |      |        |                  |                                                                                           |
-| [ ]  | 0x64   | unequal-byte     | compares the topmost two bytes on stack, pushes byte(-1) if unequal and 0 otherwise       |
-| [ ]  | 0x65   | unequal-int      | compares the topmost two ints on stack, pushes byte(-1) if unequal and 0 otherwise        |
-| [ ]  | 0x66   | unequal-float    | compares the topmost two floats on stack, pushes byte(-1) if unequal and 0 otherwise      |
+| [x]  | 0x64   | unequal-byte     | compares the topmost two bytes on stack, pushes byte(FF) if unequal and 0 otherwise       |
+| [x]  | 0x65   | unequal-int      | compares the topmost two ints on stack, pushes byte(FF) if unequal and 0 otherwise        |
+| [x]  | 0x66   | unequal-float    | compares the topmost two floats on stack, pushes byte(FF) if unequal and 0 otherwise      |
 |      |        |                  |                                                                                           |
 | [ ]  | 0x68   | greater-byte     |                                                                                           |
 | [ ]  | 0x69   | greater-int      |                                                                                           |

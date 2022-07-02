@@ -250,7 +250,7 @@ func (vm *VirtualMachine) operationDivInt() (err error) {
 	return nil
 }
 
-// operationEqualByte takes 2 bytes from the stack, pushes -1 if equal, 0 if not
+// operationEqualInt takes 2 ints from the stack, pushes -1 if equal, 0 if not
 func (vm *VirtualMachine) operationEqualInt() (err error) {
 	operant1, err := vm.stack.PopInt()
 	if err != nil {
@@ -275,5 +275,33 @@ func (vm *VirtualMachine) operationEqualInt() (err error) {
 	vm.programPointer++
 
 	vm.addLog("equal-int")
+	return nil
+}
+
+// operationUnequalInt takes 2 ints from the stack, pushes -1 if unequal, 0 if not
+func (vm *VirtualMachine) operationUnequalInt() (err error) {
+	operant1, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	operant2, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	result := byte(0x00)
+	if operant1 != operant2 {
+		result = byte(0xFF)
+	}
+
+	err = vm.stack.PushByte(result)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer++
+
+	vm.addLog("unequal-int")
 	return nil
 }

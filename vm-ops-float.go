@@ -250,7 +250,7 @@ func (vm *VirtualMachine) operationDivFloat() (err error) {
 	return nil
 }
 
-// operationEqualFloat takes 2 floats from the stack, pushes -1 if equal, 0 if not
+// operationEqualFloat takes 2 floats from the stack, pushes FF if equal, 00 if not
 func (vm *VirtualMachine) operationEqualFloat() (err error) {
 	operant1, err := vm.stack.PopFloat()
 	if err != nil {
@@ -275,5 +275,33 @@ func (vm *VirtualMachine) operationEqualFloat() (err error) {
 	vm.programPointer++
 
 	vm.addLog("equal-float")
+	return nil
+}
+
+// operationUnequalFloat takes 2 floats from the stack, pushes FF if unequal, 00 if not
+func (vm *VirtualMachine) operationUnequalFloat() (err error) {
+	operant1, err := vm.stack.PopFloat()
+	if err != nil {
+		return err
+	}
+
+	operant2, err := vm.stack.PopFloat()
+	if err != nil {
+		return err
+	}
+
+	result := byte(0x00)
+	if operant1 != operant2 {
+		result = byte(0xFF)
+	}
+
+	err = vm.stack.PushByte(result)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer++
+
+	vm.addLog("unequal-float")
 	return nil
 }

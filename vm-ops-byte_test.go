@@ -277,3 +277,41 @@ func TestEqualByte(t *testing.T) {
 		t.Errorf(err.Error())
 	}
 }
+
+func TestUnequalByte(t *testing.T) {
+	testValue1 := byte(0x24)
+	testValue2 := byte(0x00) // should be unequal
+	testValue3 := byte(0x24) // should not be unequal
+
+	p := NewProgram()
+	p.WriteByte(0x08)       // Opcode: push-byte
+	p.WriteByte(testValue1) // Operant: testValue1
+	p.WriteByte(0x08)       // Opcode: push-byte
+	p.WriteByte(testValue2) // Operant: testValue2
+	p.WriteByte(0x64)       // Opcode: unequal-byte
+	p.WriteByte(0x00)       // Opcode: end
+
+	s := NewBuffer()
+	s.WriteByte(byte(0xFF)) // true
+
+	err := p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x08)       // Opcode: push-byte
+	p.WriteByte(testValue1) // Operant: testValue1
+	p.WriteByte(0x08)       // Opcode: push-byte
+	p.WriteByte(testValue3) // Operant: testValue3
+	p.WriteByte(0x64)       // Opcode: unequal-byte
+	p.WriteByte(0x00)       // Opcode: end
+
+	s = NewBuffer()
+	s.WriteByte(byte(0x00)) // false
+
+	err = p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}
