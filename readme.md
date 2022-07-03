@@ -1,8 +1,15 @@
 # Simple virtual machine
 To train my low-level skills a bit, I've choosen to implement a virtual machine
 
+# Rough plan
+The rough plan is to implement 4 base-types (byte, int, float and string), but leaving out strings and some math library support to
+allow for a quick push-through such that we can test relatively serious programs that include some flow and some functions, since 
+that is the more difficult part. 
+
+_this probably forces us to write an assembler before completing the instruction-set_
+
 # Refactoring to-do
-- [ ] Implement short rather than byte opcodes. We are going to run out of opcodes if we want to implement strings
+- [ ] Implement short rather than byte opcodes. We are going to run out of opcodes if we want to implement strings (YAGNI for now)
 - [x] Implement get-xxx / put-xxx using an address from stack. Needed to allow for calculated addresses if we want to implement strings and arrays
 - [x] Implement get-xxx / put-xxx using an address relative to the stack-pointer. Needed to create stack-frames to implement call/return 
 
@@ -53,7 +60,7 @@ To train my low-level skills a bit, I've choosen to implement a virtual machine
 | [x]  | 0x4D   | div-int          | divides the two topmost ints on stack                                                     |
 | [x]  | 0x4E   | div-float        | divides the two topmost floats on stack                                                   |
 |      |        |                  |                                                                                           |
-|      |        |                  | some intentional open space in the opcode table                                           |
+|      |        |                  | some intentional open space in the opcode table for more operations                       |
 |      |        |                  |                                                                                           |
 | [x]  | 0x60   | equal-byte       | compares the topmost two bytes on stack, pushes byte(FF) if equal and 0 otherwise         |
 | [x]  | 0x61   | equal-int        | compares the topmost two ints on stack, pushes byte(FF) if equal and 0 otherwise          |
@@ -63,9 +70,9 @@ To train my low-level skills a bit, I've choosen to implement a virtual machine
 | [x]  | 0x65   | unequal-int      | compares the topmost two ints on stack, pushes byte(FF) if unequal and 0 otherwise        |
 | [x]  | 0x66   | unequal-float    | compares the topmost two floats on stack, pushes byte(FF) if unequal and 0 otherwise      |
 |      |        |                  |                                                                                           |
-| [x]  | 0x68   | greater-byte     |                                                                                           |
-| [ ]  | 0x69   | greater-int      |                                                                                           |
-| [ ]  | 0x6A   | greater-float    |                                                                                           |
+| [x]  | 0x68   | greater-byte     | compares the topmost two bytes on stack, pushes byte(FF) if the bottom one is greater     |
+| [x]  | 0x69   | greater-int      | compares the topmost two ints on stack, pushes byte(FF) if the bottom one is greater      |
+| [ ]  | 0x6A   | greater-float    | compares the topmost two floats on stack, pushes byte(FF) if the bottom one is greater    |
 |      |        |                  |                                                                                           |
 | [ ]  | 0x6C   | smaller-byte     |                                                                                           |
 | [ ]  | 0x6D   | smaller-int      |                                                                                           |
@@ -83,7 +90,8 @@ To train my low-level skills a bit, I've choosen to implement a virtual machine
 | [ ]  | 0x7C   | xor-byte         |                                                                                           |
 | [ ]  | 0x7D   | xor-int          |                                                                                           |
 |      |        |                  |                                                                                           |
-|      |        |                  | some intentional open space in the opcode table                                           |
+|      |        |                  | some intentional open space in the opcode table for some math & string stuff in sections  |
+|      |        |                  | 0x80, 0x90, 0xA0, 0xB0, 0xC0 and 0xD0.                                                    |
 |      |        |                  |                                                                                           |
 | [ ]  | 0xE0   | ret              | pop an address from stack and jump there                                                  |
 | [ ]  | 0xE1   | jmp         (nn) | direct address                                                                            |
