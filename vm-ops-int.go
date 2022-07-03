@@ -250,7 +250,7 @@ func (vm *VirtualMachine) operationDivInt() (err error) {
 	return nil
 }
 
-// operationEqualInt takes 2 ints from the stack, pushes -1 if equal, 0 if not
+// operationEqualInt takes 2 ints from the stack, pushes FF if equal, 00 if not
 func (vm *VirtualMachine) operationEqualInt() (err error) {
 	operant1, err := vm.stack.PopInt()
 	if err != nil {
@@ -278,7 +278,7 @@ func (vm *VirtualMachine) operationEqualInt() (err error) {
 	return nil
 }
 
-// operationUnequalInt takes 2 ints from the stack, pushes -1 if unequal, 0 if not
+// operationUnequalInt takes 2 ints from the stack, pushes FF if unequal, 00 if not
 func (vm *VirtualMachine) operationUnequalInt() (err error) {
 	operant1, err := vm.stack.PopInt()
 	if err != nil {
@@ -303,5 +303,33 @@ func (vm *VirtualMachine) operationUnequalInt() (err error) {
 	vm.programPointer++
 
 	vm.addLog("unequal-int")
+	return nil
+}
+
+// operationGreaterInt takes 2 ints from the stack, pushes FF if the second one is greater, 00 if not
+func (vm *VirtualMachine) operationGreaterInt() (err error) {
+	operant1, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	operant2, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	result := byte(0x00)
+	if operant2 > operant1 {
+		result = byte(0xFF)
+	}
+
+	err = vm.stack.PushByte(result)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer++
+
+	vm.addLog("greater-int")
 	return nil
 }

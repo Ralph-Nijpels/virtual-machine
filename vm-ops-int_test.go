@@ -313,3 +313,58 @@ func TestUnequalInt(t *testing.T) {
 		t.Errorf(err.Error())
 	}
 }
+
+func TestGreaterInt(t *testing.T) {
+	testValue1 := int(325) // Random Int
+	testValue2 := int(100) // smaller
+	testValue3 := int(325) // equal
+	testValue4 := int(700) // greater
+
+	p := NewProgram()
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue2) // Operant: testValue2
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue1) // Operant: testValue1
+	p.WriteByte(0x69)      // Opcode: greater-int
+	p.WriteByte(0x00)      // Opcode: end
+
+	s := NewBuffer()
+	s.WriteByte(byte(0x00)) // false
+
+	err := p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue3) // Operant: testValue3
+	p.WriteByte(0x09)      // Opcode: push-byte
+	p.WriteInt(testValue1) // Operant: testValue1
+	p.WriteByte(0x69)      // Opcode: greater-int
+	p.WriteByte(0x00)      // Opcode: end
+
+	s = NewBuffer()
+	s.WriteByte(byte(0x00)) // false
+
+	err = p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue4) // Operant: testValue4
+	p.WriteByte(0x09)      // Opcode: push-byte
+	p.WriteInt(testValue1) // Operant: testValue1
+	p.WriteByte(0x69)      // Opcode: greater-int
+	p.WriteByte(0x00)      // Opcode: end
+
+	s = NewBuffer()
+	s.WriteByte(byte(0xFF)) // true
+
+	err = p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}

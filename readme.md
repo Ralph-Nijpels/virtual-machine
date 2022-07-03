@@ -63,7 +63,7 @@ To train my low-level skills a bit, I've choosen to implement a virtual machine
 | [x]  | 0x65   | unequal-int      | compares the topmost two ints on stack, pushes byte(FF) if unequal and 0 otherwise        |
 | [x]  | 0x66   | unequal-float    | compares the topmost two floats on stack, pushes byte(FF) if unequal and 0 otherwise      |
 |      |        |                  |                                                                                           |
-| [ ]  | 0x68   | greater-byte     |                                                                                           |
+| [x]  | 0x68   | greater-byte     |                                                                                           |
 | [ ]  | 0x69   | greater-int      |                                                                                           |
 | [ ]  | 0x6A   | greater-float    |                                                                                           |
 |      |        |                  |                                                                                           |
