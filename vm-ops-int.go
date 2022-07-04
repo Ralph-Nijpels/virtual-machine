@@ -361,3 +361,49 @@ func (vm *VirtualMachine) operationSmallerInt() (err error) {
 	vm.addLog("smaller-int")
 	return nil
 }
+
+// operationAndInt takes 2 ints from the stack, pushes a bit-wise AND
+func (vm *VirtualMachine) operationAndInt() (err error) {
+	operant1, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	operant2, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	err = vm.stack.PushInt(operant1 & operant2)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer++
+
+	vm.addLog("and-int")
+	return nil
+}
+
+// operationOrInt takes 2 bytes from the stack, pushes a bit-wise OR
+func (vm *VirtualMachine) operationOrInt() (err error) {
+	operant1, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	operant2, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	err = vm.stack.PushInt(operant1 | operant2)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer++
+
+	vm.addLog("or-int")
+	return nil
+}

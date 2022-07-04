@@ -423,3 +423,111 @@ func TestSmallerInt(t *testing.T) {
 		t.Errorf(err.Error())
 	}
 }
+
+func TestAndInt(t *testing.T) {
+	testValue1 := int(0x00000000)
+	testValue2 := int(0x0A0A0A0A)
+	testValue3 := int(0xFFFFFFFF)
+
+	p := NewProgram()
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue1) // Operant: testValue1
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue2) // Operant: testValue2
+	p.WriteByte(0x71)      // Opcode: and-int
+	p.WriteByte(0x00)      // Opcode: end
+
+	s := NewBuffer()
+	s.WriteInt(0x00000000)
+
+	err := p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue1) // Operant: testValue1
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue3) // Operant: testValue3
+	p.WriteByte(0x71)      // Opcode: and-int
+	p.WriteByte(0x00)      // Opcode: end
+
+	s = NewBuffer()
+	s.WriteInt(0x00000000)
+
+	err = p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue2) // Operant: testValue2
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue3) // Operant: testValue3
+	p.WriteByte(0x71)      // Opcode: and-byte
+	p.WriteByte(0x00)      // Opcode: end
+
+	s = NewBuffer()
+	s.WriteInt(0x0A0A0A0A)
+
+	err = p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}
+
+func TestOrInt(t *testing.T) {
+	testValue1 := int(0x00000000)
+	testValue2 := int(0x0A0A0A0A)
+	testValue3 := int(0xFFFFFFFF)
+
+	p := NewProgram()
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue1) // Operant: testValue1
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue2) // Operant: testValue2
+	p.WriteByte(0x75)      // Opcode: or-int
+	p.WriteByte(0x00)      // Opcode: end
+
+	s := NewBuffer()
+	s.WriteInt(0x0A0A0A0A)
+
+	err := p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue1) // Operant: testValue1
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue3) // Operant: testValue3
+	p.WriteByte(0x75)      // Opcode: or-int
+	p.WriteByte(0x00)      // Opcode: end
+
+	s = NewBuffer()
+	s.WriteInt(0xFFFFFFFF)
+
+	err = p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue2) // Operant: testValue2
+	p.WriteByte(0x09)      // Opcode: push-int
+	p.WriteInt(testValue3) // Operant: testValue3
+	p.WriteByte(0x75)      // Opcode: or-int
+	p.WriteByte(0x00)      // Opcode: end
+
+	s = NewBuffer()
+	s.WriteInt(0xFFFFFFFF)
+
+	err = p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}

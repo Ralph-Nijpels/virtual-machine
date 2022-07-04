@@ -6,12 +6,13 @@ The rough plan is to implement 4 base-types (byte, int, float and string), but l
 allow for a quick push-through such that we can test relatively serious programs that include some flow and some functions, since 
 that is the more difficult part. 
 
-_this probably forces us to write an assembler before completing the instruction-set_
+_this probably forces us to write an assembler before completing the instruction-set, just to do a number of meaningfull tests on program flow_
 
-# Refactoring to-do
+# Refactoring to-do / potentially to-do
 - [ ] Implement short rather than byte opcodes. We are going to run out of opcodes if we want to implement strings (YAGNI for now)
 - [x] Implement get-xxx / put-xxx using an address from stack. Needed to allow for calculated addresses if we want to implement strings and arrays
 - [x] Implement get-xxx / put-xxx using an address relative to the stack-pointer. Needed to create stack-frames to implement call/return 
+- [ ] Change the 'smaller-' opcodes into a boundary inclusive version of 'greater-' may be more usefull than having some kind of strict symetrie: the difference between greater/smaller can be overcome by inverting the operants. The difference between boundary excluded and boundary included introduces an extra test _and_ an extra logic step.
 
 # Plan for the Opcodes
 | Done | Opcode | Mnemonic         | Description                                                                               |
@@ -72,17 +73,17 @@ _this probably forces us to write an assembler before completing the instruction
 |      |        |                  |                                                                                           |
 | [x]  | 0x68   | greater-byte     | compares the topmost two bytes on stack, pushes byte(FF) if the bottom one is greater     |
 | [x]  | 0x69   | greater-int      | compares the topmost two ints on stack, pushes byte(FF) if the bottom one is greater      |
-| [ ]  | 0x6A   | greater-float    | compares the topmost two floats on stack, pushes byte(FF) if the bottom one is greater    |
+| [x]  | 0x6A   | greater-float    | compares the topmost two floats on stack, pushes byte(FF) if the bottom one is greater    |
 |      |        |                  |                                                                                           |
-| [x]  | 0x6C   | smaller-byte     |                                                                                           |
-| [x]  | 0x6D   | smaller-int      |                                                                                           |
-| [x]  | 0x6E   | smaller-Float    |                                                                                           |
+| [x]  | 0x6C   | smaller-byte     | compares the topmost two bytes on stack, pushes byte(FF) if the bottom one is smaller     |
+| [x]  | 0x6D   | smaller-int      | compares the topmost two ints on stack, pushes byte(FF) if the bottom one is smaller      |
+| [x]  | 0x6E   | smaller-Float    | compares the topmost two floats on stack, pushes byte(FF) if the bottom one is smaller    |
 |      |        |                  |                                                                                           |
-| [ ]  | 0x70   | and-byte         |                                                                                           |
-| [ ]  | 0x71   | and-int          |                                                                                           |
+| [x]  | 0x70   | and-byte         | takes the two topmost bytes from stack and pushes a bit-wise AND                          |
+| [x]  | 0x71   | and-int          | takes the two topmost ints from stack and pushes a bit-wise AND                           |
 |      |        |                  |                                                                                           |
-| [ ]  | 0x74   | or-byte          |                                                                                           |
-| [ ]  | 0x75   | or-int           |                                                                                           |
+| [x]  | 0x74   | or-byte          | takes the two topmost bytes from stack and pushes a bit-wise OR                           |
+| [x]  | 0x75   | or-int           | takes the two topmost ints from stack and pushes a bit-wise OR                            |
 |      |        |                  |                                                                                           |
 | [ ]  | 0x78   | not-byte         |                                                                                           |
 | [ ]  | 0x79   | not-int          |                                                                                           |
@@ -114,6 +115,3 @@ _this probably forces us to write an assembler before completing the instruction
 |      |        |                  |                                                                                           |
 | [ ]  | 0xF8   | call             | address from stack                                                                        |
 | [ ]  | 0xF9   | call        (nn) |                                                                                           |
-
-# Silly change
-To see if it now also works on my laptop...

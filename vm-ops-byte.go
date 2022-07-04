@@ -361,3 +361,49 @@ func (vm *VirtualMachine) operationSmallerByte() (err error) {
 	vm.addLog("smaller-byte")
 	return nil
 }
+
+// operationAndByte takes 2 bytes from the stack, pushes a bit-wise AND
+func (vm *VirtualMachine) operationAndByte() (err error) {
+	operant1, err := vm.stack.PopByte()
+	if err != nil {
+		return err
+	}
+
+	operant2, err := vm.stack.PopByte()
+	if err != nil {
+		return err
+	}
+
+	err = vm.stack.PushByte(operant1 & operant2)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer++
+
+	vm.addLog("and-byte")
+	return nil
+}
+
+// operationOrByte takes 2 bytes from the stack, pushes a bit-wise OR
+func (vm *VirtualMachine) operationOrByte() (err error) {
+	operant1, err := vm.stack.PopByte()
+	if err != nil {
+		return err
+	}
+
+	operant2, err := vm.stack.PopByte()
+	if err != nil {
+		return err
+	}
+
+	err = vm.stack.PushByte(operant1 | operant2)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer++
+
+	vm.addLog("or-byte")
+	return nil
+}
