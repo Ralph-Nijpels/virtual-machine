@@ -306,7 +306,7 @@ func (vm *VirtualMachine) operationUnequalByte() (err error) {
 	return nil
 }
 
-// operationUnequalByte takes 2 bytes from the stack, pushes FF if 2nd one is greater, 00 if not
+// operationGreaterByte takes 2 bytes from the stack, pushes FF if 2nd one is greater, 00 if not
 func (vm *VirtualMachine) operationGreaterByte() (err error) {
 	operant1, err := vm.stack.PopByte()
 	if err != nil {
@@ -331,5 +331,33 @@ func (vm *VirtualMachine) operationGreaterByte() (err error) {
 	vm.programPointer++
 
 	vm.addLog("greater-byte")
+	return nil
+}
+
+// operationSmallerByte takes 2 bytes from the stack, pushes FF if 2nd one is smaller, 00 if not
+func (vm *VirtualMachine) operationSmallerByte() (err error) {
+	operant1, err := vm.stack.PopByte()
+	if err != nil {
+		return err
+	}
+
+	operant2, err := vm.stack.PopByte()
+	if err != nil {
+		return err
+	}
+
+	result := byte(0x00)
+	if operant2 < operant1 {
+		result = byte(0xFF)
+	}
+
+	err = vm.stack.PushByte(result)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer++
+
+	vm.addLog("smaller-byte")
 	return nil
 }

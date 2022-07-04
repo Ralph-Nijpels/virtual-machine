@@ -74,9 +74,9 @@ _this probably forces us to write an assembler before completing the instruction
 | [x]  | 0x69   | greater-int      | compares the topmost two ints on stack, pushes byte(FF) if the bottom one is greater      |
 | [ ]  | 0x6A   | greater-float    | compares the topmost two floats on stack, pushes byte(FF) if the bottom one is greater    |
 |      |        |                  |                                                                                           |
-| [ ]  | 0x6C   | smaller-byte     |                                                                                           |
-| [ ]  | 0x6D   | smaller-int      |                                                                                           |
-| [ ]  | 0x6E   | smaller-Float    |                                                                                           |
+| [x]  | 0x6C   | smaller-byte     |                                                                                           |
+| [x]  | 0x6D   | smaller-int      |                                                                                           |
+| [x]  | 0x6E   | smaller-Float    |                                                                                           |
 |      |        |                  |                                                                                           |
 | [ ]  | 0x70   | and-byte         |                                                                                           |
 | [ ]  | 0x71   | and-int          |                                                                                           |
@@ -91,7 +91,7 @@ _this probably forces us to write an assembler before completing the instruction
 | [ ]  | 0x7D   | xor-int          |                                                                                           |
 |      |        |                  |                                                                                           |
 |      |        |                  | some intentional open space in the opcode table for some math & string stuff in sections  |
-|      |        |                  | 0x80, 0x90, 0xA0, 0xB0, 0xC0 and 0xD0.                                                    |
+|      |        |                  | 0x80, 0x90, 0xA0, 0xB0, and 0xC0. We are goin to use section 0xD0 for input/ouput         |
 |      |        |                  |                                                                                           |
 | [ ]  | 0xE0   | ret              | pop an address from stack and jump there                                                  |
 | [ ]  | 0xE1   | jmp         (nn) | direct address                                                                            |

@@ -333,3 +333,31 @@ func (vm *VirtualMachine) operationGreaterInt() (err error) {
 	vm.addLog("greater-int")
 	return nil
 }
+
+// operationSmallerInt takes 2 ints from the stack, pushes FF if the second one is smaller, 00 if not
+func (vm *VirtualMachine) operationSmallerInt() (err error) {
+	operant1, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	operant2, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	result := byte(0x00)
+	if operant2 < operant1 {
+		result = byte(0xFF)
+	}
+
+	err = vm.stack.PushByte(result)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer++
+
+	vm.addLog("smaller-int")
+	return nil
+}

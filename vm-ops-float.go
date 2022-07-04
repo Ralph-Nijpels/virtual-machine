@@ -333,3 +333,31 @@ func (vm *VirtualMachine) operationGreaterFloat() (err error) {
 	vm.addLog("greater-float")
 	return nil
 }
+
+// operationSmallerFloat takes 2 floats from the stack, pushes FF if the bottom one is smaller, 00 otherwise
+func (vm *VirtualMachine) operationSmallerFloat() (err error) {
+	operant1, err := vm.stack.PopFloat()
+	if err != nil {
+		return err
+	}
+
+	operant2, err := vm.stack.PopFloat()
+	if err != nil {
+		return err
+	}
+
+	result := byte(0x00)
+	if operant2 < operant1 {
+		result = byte(0xFF)
+	}
+
+	err = vm.stack.PushByte(result)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer++
+
+	vm.addLog("smaller-float")
+	return nil
+}

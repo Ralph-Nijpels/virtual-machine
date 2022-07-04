@@ -361,7 +361,62 @@ func TestGreaterFloat(t *testing.T) {
 	p.WriteByte(0x00)        // Opcode: end
 
 	s = NewBuffer()
-	s.WriteByte(byte(0xFF)) // false
+	s.WriteByte(byte(0xFF)) // true
+
+	err = p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}
+
+func TestSmallerFloat(t *testing.T) {
+	testValue1 := float64(12.34) // random float
+	testValue2 := float64(0.0)   // smaller
+	testValue3 := float64(12.34) // equal
+	testValue4 := float64(23.45) // greater
+
+	p := NewProgram()
+	p.WriteByte(0x0A)        // Opcode: push-float
+	p.WriteFloat(testValue2) // Operant: testValue2
+	p.WriteByte(0x0A)        // Opcode: push-float
+	p.WriteFloat(testValue1) // Operant: testValue1
+	p.WriteByte(0x6E)        // Opcode: smaller-float
+	p.WriteByte(0x00)        // Opcode: end
+
+	s := NewBuffer()
+	s.WriteByte(byte(0xFF)) // true
+
+	err := p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x0A)        // Opcode: push-float
+	p.WriteFloat(testValue3) // Operant: testValue3
+	p.WriteByte(0x0A)        // Opcode: push-float
+	p.WriteFloat(testValue1) // Operant: testValue1
+	p.WriteByte(0x6E)        // Opcode: smaller-float
+	p.WriteByte(0x00)        // Opcode: end
+
+	s = NewBuffer()
+	s.WriteByte(byte(0x00)) // false
+
+	err = p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x0A)        // Opcode: push-float
+	p.WriteFloat(testValue4) // Operant: testValue4
+	p.WriteByte(0x0A)        // Opcode: push-float
+	p.WriteFloat(testValue1) // Operant: testValue1
+	p.WriteByte(0x6E)        // Opcode: smaller-float
+	p.WriteByte(0x00)        // Opcode: end
+
+	s = NewBuffer()
+	s.WriteByte(byte(0x00)) // false
 
 	err = p.Run(s, nil)
 	if err != nil {
