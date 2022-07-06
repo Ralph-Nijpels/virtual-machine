@@ -80,16 +80,12 @@ _this probably forces us to write an assembler before completing the instruction
 | [x]  | 0x6E   | smaller-Float    | compares the topmost two floats on stack, pushes byte(FF) if the bottom one is smaller    |
 |      |        |                  |                                                                                           |
 | [x]  | 0x70   | and-byte         | takes the two topmost bytes from stack and pushes a bit-wise AND                          |
-| [x]  | 0x71   | and-int          | takes the two topmost ints from stack and pushes a bit-wise AND                           |
 |      |        |                  |                                                                                           |
 | [x]  | 0x74   | or-byte          | takes the two topmost bytes from stack and pushes a bit-wise OR                           |
-| [x]  | 0x75   | or-int           | takes the two topmost ints from stack and pushes a bit-wise OR                            |
 |      |        |                  |                                                                                           |
-| [x]  | 0x78   | not-byte         |                                                                                           |
-| [ ]  | 0x79   | not-int          |                                                                                           |
+| [x]  | 0x78   | not-byte         | takes the topmost byte from stack and pushes a bit-wise NOT                               |
 |      |        |                  |                                                                                           |
-| [x]  | 0x7C   | xor-byte         |                                                                                           |
-| [ ]  | 0x7D   | xor-int          |                                                                                           |
+| [x]  | 0x7C   | xor-byte         | takes the two topmost bytes from stack and pushes a bit-wise XOR                          |
 |      |        |                  |                                                                                           |
 |      |        |                  | some intentional open space in the opcode table for some math & string stuff in sections  |
 |      |        |                  | 0x80, 0x90, 0xA0, 0xB0, and 0xC0. We are goin to use section 0xD0 for input/ouput         |
