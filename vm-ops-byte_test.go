@@ -533,3 +533,105 @@ func TestOrByte(t *testing.T) {
 		t.Errorf(err.Error())
 	}
 }
+
+func TestNotByte(t *testing.T) {
+	testValue1 := byte(0x00)
+	testValue2 := byte(0x5A)
+	testValue3 := byte(0xFF)
+
+	p := NewProgram()
+	p.WriteByte(0x08)       // Opcode: push-byte
+	p.WriteByte(testValue1) // Operant: testValue1
+	p.WriteByte(0x78)       // Opcode: not-byte
+	p.WriteByte(0x00)       // Opcode: end
+
+	s := NewBuffer()
+	s.WriteByte(0xFF)
+
+	err := p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x08)       // Opcode: push-byte
+	p.WriteByte(testValue2) // Operant: testValue2
+	p.WriteByte(0x78)       // Opcode: not-byte
+	p.WriteByte(0x00)       // Opcode: end
+
+	s = NewBuffer()
+	s.WriteByte(0xA5)
+
+	err = p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x08)       // Opcode: push-byte
+	p.WriteByte(testValue3) // Operant: testValue3
+	p.WriteByte(0x78)       // Opcode: not-byte
+	p.WriteByte(0x00)       // Opcode: end
+
+	s = NewBuffer()
+	s.WriteByte(0x00)
+
+	err = p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}
+
+func TestXorByte(t *testing.T) {
+	testValue1 := byte(0x00)
+	testValue2 := byte(0xAA)
+	testValue3 := byte(0xFF)
+
+	p := NewProgram()
+	p.WriteByte(0x08)       // Opcode: push-byte
+	p.WriteByte(testValue1) // Operant: testValue1
+	p.WriteByte(0x08)       // Opcode: push-byte
+	p.WriteByte(testValue2) // Operant: testValue2
+	p.WriteByte(0x7C)       // Opcode: xor-byte
+	p.WriteByte(0x00)       // Opcode: end
+
+	s := NewBuffer()
+	s.WriteByte(0xAA)
+
+	err := p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x08)       // Opcode: push-byte
+	p.WriteByte(testValue1) // Operant: testValue1
+	p.WriteByte(0x08)       // Opcode: push-byte
+	p.WriteByte(testValue3) // Operant: testValue3
+	p.WriteByte(0x7C)       // Opcode: xor-byte
+	p.WriteByte(0x00)       // Opcode: end
+
+	s = NewBuffer()
+	s.WriteByte(0xFF)
+
+	err = p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x08)       // Opcode: push-byte
+	p.WriteByte(testValue2) // Operant: testValue2
+	p.WriteByte(0x08)       // Opcode: push-byte
+	p.WriteByte(testValue3) // Operant: testValue3
+	p.WriteByte(0x7C)       // Opcode: xor-byte
+	p.WriteByte(0x00)       // Opcode: end
+
+	s = NewBuffer()
+	s.WriteByte(0x55)
+
+	err = p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}

@@ -85,10 +85,10 @@ _this probably forces us to write an assembler before completing the instruction
 | [x]  | 0x74   | or-byte          | takes the two topmost bytes from stack and pushes a bit-wise OR                           |
 | [x]  | 0x75   | or-int           | takes the two topmost ints from stack and pushes a bit-wise OR                            |
 |      |        |                  |                                                                                           |
-| [ ]  | 0x78   | not-byte         |                                                                                           |
+| [x]  | 0x78   | not-byte         |                                                                                           |
 | [ ]  | 0x79   | not-int          |                                                                                           |
 |      |        |                  |                                                                                           |
-| [ ]  | 0x7C   | xor-byte         |                                                                                           |
+| [x]  | 0x7C   | xor-byte         |                                                                                           |
 | [ ]  | 0x7D   | xor-int          |                                                                                           |
 |      |        |                  |                                                                                           |
 |      |        |                  | some intentional open space in the opcode table for some math & string stuff in sections  |

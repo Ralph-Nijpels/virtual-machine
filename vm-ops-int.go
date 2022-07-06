@@ -385,7 +385,7 @@ func (vm *VirtualMachine) operationAndInt() (err error) {
 	return nil
 }
 
-// operationOrInt takes 2 bytes from the stack, pushes a bit-wise OR
+// operationOrInt takes 2 ints from the stack, pushes a bit-wise OR
 func (vm *VirtualMachine) operationOrInt() (err error) {
 	operant1, err := vm.stack.PopInt()
 	if err != nil {

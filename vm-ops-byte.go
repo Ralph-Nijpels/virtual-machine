@@ -407,3 +407,44 @@ func (vm *VirtualMachine) operationOrByte() (err error) {
 	vm.addLog("or-byte")
 	return nil
 }
+
+// operationNotByte takes a byte from the stack, pushes a bit-wise NOT
+func (vm *VirtualMachine) operationNotByte() (err error) {
+	operant1, err := vm.stack.PopByte()
+	if err != nil {
+		return err
+	}
+
+	err = vm.stack.PushByte(^operant1)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer++
+
+	vm.addLog("not-byte")
+	return nil
+}
+
+// operationXorByte takes 2 bytes from the stack, pushes a bit-wise XOR
+func (vm *VirtualMachine) operationXorByte() (err error) {
+	operant1, err := vm.stack.PopByte()
+	if err != nil {
+		return err
+	}
+
+	operant2, err := vm.stack.PopByte()
+	if err != nil {
+		return err
+	}
+
+	err = vm.stack.PushByte(operant1 ^ operant2)
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer++
+
+	vm.addLog("xor-byte")
+	return nil
+}
