@@ -13,6 +13,8 @@ _this probably forces us to write an assembler before completing the instruction
 - [x] Implement get-xxx / put-xxx using an address from stack. Needed to allow for calculated addresses if we want to implement strings and arrays
 - [x] Implement get-xxx / put-xxx using an address relative to the stack-pointer. Needed to create stack-frames to implement call/return 
 - [ ] Change the 'smaller-' opcodes into a boundary inclusive version of 'greater-' may be more usefull than having some kind of strict symetrie: the difference between greater/smaller can be overcome by inverting the operants. The difference between boundary excluded and boundary included introduces an extra test _and_ an extra logic step.
+- [ ] Include a pop-xxx that basically throws away the topmost value from stack, you're going to need it to clean up stack-frames upon return, this will result in a rather large review of the opcode table
+- [ ] Compress the bit-wise logic opcodes into one section because they only work on unsigned integer types, in our case the byte, on all other types you get problems with illegal values for the type
 
 # Plan for the Opcodes
 | Done | Opcode | Mnemonic         | Description                                                                               |
