@@ -20,6 +20,19 @@ func (vm *VirtualMachine) operationPushInt() (err error) {
 	return nil
 }
 
+// operationPopInt pops an int from stack (and looses it)
+func (vm *VirtualMachine) operationPopInt() (err error) {
+	_, err = vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer += 1
+
+	vm.addLog("pop-int")
+	return nil
+}
+
 // operationGetInt pops an address from stack and pushes the int from that memory-address
 func (vm *VirtualMachine) operationGetInt() (err error) {
 	address, err := vm.stack.PopInt()

@@ -10,12 +10,29 @@ func TestPushByte(t *testing.T) {
 	testValue := byte(0x0C)
 
 	p := NewProgram()
-	p.WriteByte(0x08)      // Opcode: PushByte
+	p.WriteByte(0x08)      // Opcode: push-byte
 	p.WriteByte(testValue) // Operant: testValue
 	p.WriteByte(0x00)      // Opcode: End
 
 	s := NewBuffer()
 	s.WriteByte(testValue)
+
+	err := p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}
+
+func TestPopByte(t *testing.T) {
+	testValue := byte(0x0C)
+
+	p := NewProgram()
+	p.WriteByte(0x08)      // Opcode: push-byte
+	p.WriteByte(testValue) // Operant: testValue
+	p.WriteByte(0xC)       // Opcode: pop-byte
+	p.WriteByte(0x00)      // Opcode: End
+
+	s := NewBuffer()
 
 	err := p.Run(s, nil)
 	if err != nil {

@@ -20,6 +20,19 @@ func (vm *VirtualMachine) operationPushFloat() (err error) {
 	return nil
 }
 
+// operationPopFloat pops a float from the stack (and looses it)
+func (vm *VirtualMachine) operationPopFloat() (err error) {
+	_, err = vm.stack.PopFloat()
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer += 1
+
+	vm.addLog("pop-float")
+	return nil
+}
+
 // operationGetFloat pops an address and pushes the float from that memory-address
 func (vm *VirtualMachine) operationGetFloat() (err error) {
 	address, err := vm.stack.PopInt()

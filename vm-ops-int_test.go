@@ -21,6 +21,23 @@ func TestPushInt(t *testing.T) {
 	}
 }
 
+func TestPopInt(t *testing.T) {
+	testValue := int(-325)
+
+	p := NewProgram()
+	p.WriteByte(0x09)     // Opcode: push-int
+	p.WriteInt(testValue) // Operant: testValue
+	p.WriteByte(0x0D)     // Opcode: pop-int
+	p.WriteByte(0x00)     // Opcode: end
+
+	s := NewBuffer()
+
+	err := p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}
+
 func TestGetInt(t *testing.T) {
 	testAddress := int(0x0B)
 	testValue := int(-325)

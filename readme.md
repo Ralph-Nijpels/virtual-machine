@@ -12,9 +12,11 @@ _this probably forces us to write an assembler before completing the instruction
 - [ ] Implement short rather than byte opcodes. We are going to run out of opcodes if we want to implement strings (YAGNI for now)
 - [x] Implement get-xxx / put-xxx using an address from stack. Needed to allow for calculated addresses if we want to implement strings and arrays
 - [x] Implement get-xxx / put-xxx using an address relative to the stack-pointer. Needed to create stack-frames to implement call/return 
-- [ ] Introduce opcodes for greater-equal and smaller-equal (YAGNI for now)
-- [ ] Include a pop-xxx that basically throws away the topmost value from stack, you're going to need it to clean up stack-frames upon return, this will result in a rather large review of the opcode table
+- [ ] Introduce opcodes for greater-equal and smaller-equal (YAGNI for now, not sure if I cannot use the space in the opcode-table more effectively)
+- [x] Include a pop-xxx that basically throws away the topmost value from stack, you're going to need it to clean up stack-frames upon return, this will result in a rather large review of the opcode table
 - [x] Compress the bit-wise logic opcodes into one section because they only work on unsigned integer types, in our case the byte, on all other types you get problems with illegal values for the type
+- [ ] Include opcodes for inc and dec (YAGNI for for, perhaps I can use the space in the opcode table more effectivly although even the Z80 had it)
+- [ ] Include opcodes for lshift and rshift (YAGNI for for, perhaps I can use the space in the opcode table more effectivly although even the Z80 had it)
 
 # Plan for the Opcodes
 | Done | Opcode | Mnemonic         | Description                                                                               |
@@ -22,6 +24,10 @@ _this probably forces us to write an assembler before completing the instruction
 | [x]  | 0x08   | push-byte    nn  | pushes a constant byte value on the stack                                                 |
 | [x]  | 0x09   | push-int     nn  | pushes a contant integer value on the stack                                               |
 | [x]  | 0x0A   | push-float   nn  | pushes a constant float value on the stack                                                |
+|      |        |                  |                                                                                           |
+| [x]  | 0x0C   | pop-byte         | pops a byte from the stack (and looses it)                                                |
+| [x]  | 0x0D   | pop-int          | pops an integer from the stack (and looses it)                                            |
+| [x]  | 0x0E   | pop-float        | pops a float value from the stack (and looses it)                                         |
 |      |        |                  |                                                                                           |
 | [x]  | 0x10   | get-byte         | pops an address from stack, retrieves a byte from this address and push it onto the stack |
 | [x]  | 0x11   | get-int          | pops an address from stack, retrieves a byte from this address and push it onto the stack |

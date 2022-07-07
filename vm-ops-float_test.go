@@ -21,6 +21,23 @@ func TestPushFloat(t *testing.T) {
 	}
 }
 
+func TestPopFloat(t *testing.T) {
+	testValue := float64(-120.7)
+
+	p := NewProgram()
+	p.WriteByte(0x0A)       // Opcode: push-float
+	p.WriteFloat(testValue) // Operant: testValue
+	p.WriteByte(0x0E)       // Opcode: pop-float
+	p.WriteByte(0x00)       // Opcode: end
+
+	s := NewBuffer()
+
+	err := p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+}
+
 func TestGetFloat(t *testing.T) {
 	testAddress := int(0x0B)
 	testValue := float64(-12.34)

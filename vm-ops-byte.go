@@ -20,6 +20,19 @@ func (vm *VirtualMachine) operationPushByte() (err error) {
 	return nil
 }
 
+// operationPopByte pops a byte from stack (and looses it)
+func (vm *VirtualMachine) operationPopByte() (err error) {
+	_, err = vm.stack.PopByte()
+	if err != nil {
+		return err
+	}
+
+	vm.programPointer += 1
+
+	vm.addLog("pop-byte")
+	return nil
+}
+
 // operationGetByte pops an address from the stack and pushes the byte from that address in memory
 func (vm *VirtualMachine) operationGetByte() (err error) {
 	address, err := vm.stack.PopInt()
