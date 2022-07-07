@@ -12,9 +12,9 @@ _this probably forces us to write an assembler before completing the instruction
 - [ ] Implement short rather than byte opcodes. We are going to run out of opcodes if we want to implement strings (YAGNI for now)
 - [x] Implement get-xxx / put-xxx using an address from stack. Needed to allow for calculated addresses if we want to implement strings and arrays
 - [x] Implement get-xxx / put-xxx using an address relative to the stack-pointer. Needed to create stack-frames to implement call/return 
-- [ ] Change the 'smaller-' opcodes into a boundary inclusive version of 'greater-' may be more usefull than having some kind of strict symetrie: the difference between greater/smaller can be overcome by inverting the operants. The difference between boundary excluded and boundary included introduces an extra test _and_ an extra logic step.
+- [ ] Introduce opcodes for greater-equal and smaller-equal (YAGNI for now)
 - [ ] Include a pop-xxx that basically throws away the topmost value from stack, you're going to need it to clean up stack-frames upon return, this will result in a rather large review of the opcode table
-- [ ] Compress the bit-wise logic opcodes into one section because they only work on unsigned integer types, in our case the byte, on all other types you get problems with illegal values for the type
+- [x] Compress the bit-wise logic opcodes into one section because they only work on unsigned integer types, in our case the byte, on all other types you get problems with illegal values for the type
 
 # Plan for the Opcodes
 | Done | Opcode | Mnemonic         | Description                                                                               |
@@ -82,12 +82,9 @@ _this probably forces us to write an assembler before completing the instruction
 | [x]  | 0x6E   | smaller-Float    | compares the topmost two floats on stack, pushes byte(FF) if the bottom one is smaller    |
 |      |        |                  |                                                                                           |
 | [x]  | 0x70   | and-byte         | takes the two topmost bytes from stack and pushes a bit-wise AND                          |
-|      |        |                  |                                                                                           |
-| [x]  | 0x74   | or-byte          | takes the two topmost bytes from stack and pushes a bit-wise OR                           |
-|      |        |                  |                                                                                           |
-| [x]  | 0x78   | not-byte         | takes the topmost byte from stack and pushes a bit-wise NOT                               |
-|      |        |                  |                                                                                           |
-| [x]  | 0x7C   | xor-byte         | takes the two topmost bytes from stack and pushes a bit-wise XOR                          |
+| [x]  | 0x71   | or-byte          | takes the two topmost bytes from stack and pushes a bit-wise OR                           |
+| [x]  | 0x72   | not-byte         | takes the topmost byte from stack and pushes a bit-wise NOT                               |
+| [x]  | 0x73   | xor-byte         | takes the two topmost bytes from stack and pushes a bit-wise XOR                          |
 |      |        |                  |                                                                                           |
 |      |        |                  | some intentional open space in the opcode table for some math & string stuff in sections  |
 |      |        |                  | 0x80, 0x90, 0xA0, 0xB0, and 0xC0. We are goin to use section 0xD0 for input/ouput         |

@@ -490,7 +490,7 @@ func TestOrByte(t *testing.T) {
 	p.WriteByte(testValue1) // Operant: testValue1
 	p.WriteByte(0x08)       // Opcode: push-byte
 	p.WriteByte(testValue2) // Operant: testValue2
-	p.WriteByte(0x74)       // Opcode: or-byte
+	p.WriteByte(0x71)       // Opcode: or-byte
 	p.WriteByte(0x00)       // Opcode: end
 
 	s := NewBuffer()
@@ -506,7 +506,7 @@ func TestOrByte(t *testing.T) {
 	p.WriteByte(testValue1) // Operant: testValue1
 	p.WriteByte(0x08)       // Opcode: push-byte
 	p.WriteByte(testValue3) // Operant: testValue3
-	p.WriteByte(0x74)       // Opcode: or-byte
+	p.WriteByte(0x71)       // Opcode: or-byte
 	p.WriteByte(0x00)       // Opcode: end
 
 	s = NewBuffer()
@@ -522,7 +522,7 @@ func TestOrByte(t *testing.T) {
 	p.WriteByte(testValue2) // Operant: testValue2
 	p.WriteByte(0x08)       // Opcode: push-byte
 	p.WriteByte(testValue3) // Operant: testValue3
-	p.WriteByte(0x74)       // Opcode: or-byte
+	p.WriteByte(0x71)       // Opcode: or-byte
 	p.WriteByte(0x00)       // Opcode: end
 
 	s = NewBuffer()
@@ -542,7 +542,7 @@ func TestNotByte(t *testing.T) {
 	p := NewProgram()
 	p.WriteByte(0x08)       // Opcode: push-byte
 	p.WriteByte(testValue1) // Operant: testValue1
-	p.WriteByte(0x78)       // Opcode: not-byte
+	p.WriteByte(0x72)       // Opcode: not-byte
 	p.WriteByte(0x00)       // Opcode: end
 
 	s := NewBuffer()
@@ -556,7 +556,7 @@ func TestNotByte(t *testing.T) {
 	p = NewProgram()
 	p.WriteByte(0x08)       // Opcode: push-byte
 	p.WriteByte(testValue2) // Operant: testValue2
-	p.WriteByte(0x78)       // Opcode: not-byte
+	p.WriteByte(0x72)       // Opcode: not-byte
 	p.WriteByte(0x00)       // Opcode: end
 
 	s = NewBuffer()
@@ -570,7 +570,7 @@ func TestNotByte(t *testing.T) {
 	p = NewProgram()
 	p.WriteByte(0x08)       // Opcode: push-byte
 	p.WriteByte(testValue3) // Operant: testValue3
-	p.WriteByte(0x78)       // Opcode: not-byte
+	p.WriteByte(0x72)       // Opcode: not-byte
 	p.WriteByte(0x00)       // Opcode: end
 
 	s = NewBuffer()
@@ -592,7 +592,7 @@ func TestXorByte(t *testing.T) {
 	p.WriteByte(testValue1) // Operant: testValue1
 	p.WriteByte(0x08)       // Opcode: push-byte
 	p.WriteByte(testValue2) // Operant: testValue2
-	p.WriteByte(0x7C)       // Opcode: xor-byte
+	p.WriteByte(0x73)       // Opcode: xor-byte
 	p.WriteByte(0x00)       // Opcode: end
 
 	s := NewBuffer()
@@ -608,7 +608,7 @@ func TestXorByte(t *testing.T) {
 	p.WriteByte(testValue1) // Operant: testValue1
 	p.WriteByte(0x08)       // Opcode: push-byte
 	p.WriteByte(testValue3) // Operant: testValue3
-	p.WriteByte(0x7C)       // Opcode: xor-byte
+	p.WriteByte(0x73)       // Opcode: xor-byte
 	p.WriteByte(0x00)       // Opcode: end
 
 	s = NewBuffer()
@@ -624,7 +624,7 @@ func TestXorByte(t *testing.T) {
 	p.WriteByte(testValue2) // Operant: testValue2
 	p.WriteByte(0x08)       // Opcode: push-byte
 	p.WriteByte(testValue3) // Operant: testValue3
-	p.WriteByte(0x7C)       // Opcode: xor-byte
+	p.WriteByte(0x73)       // Opcode: xor-byte
 	p.WriteByte(0x00)       // Opcode: end
 
 	s = NewBuffer()
