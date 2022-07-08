@@ -294,7 +294,7 @@ func TestJmpzFloat(t *testing.T) {
 	p.WriteFloat(0.0)          // Operant: 0.0 (jumps)
 	p.WriteByte(0x09)          // Opcode: push-int
 	p.WriteInt(testAddress1)   // Operant: testAddress1
-	p.WriteByte(0xE5)          // Opcode: jmpz-int
+	p.WriteByte(0xE5)          // Opcode: jmpz-float
 	p.WriteByte(0x09)          // Opcode: push-int
 	p.WriteInt(testValueFalse) // Operant: testValueFalse
 	p.WriteByte(0x00)          // Opcode: end
@@ -315,7 +315,7 @@ func TestJmpzFloat(t *testing.T) {
 	p.WriteFloat(-1.0)         // Operant: -1.0 (no jump)
 	p.WriteByte(0x09)          // Opcode: push-int
 	p.WriteInt(testAddress1)   // Operant: testAddress1
-	p.WriteByte(0xE5)          // Opcode: jmpz-int
+	p.WriteByte(0xE5)          // Opcode: jmpz-float
 	p.WriteByte(0x09)          // Opcode: push-int
 	p.WriteInt(testValueFalse) // Operant: testValueFalse
 	p.WriteByte(0x00)          // Opcode: end
@@ -336,7 +336,7 @@ func TestJmpzFloat(t *testing.T) {
 	p.WriteFloat(0.0)          // Operant: 0.0 (jumps)
 	p.WriteByte(0x09)          // Opcode: push-int
 	p.WriteInt(testAddress2)   // Operant: testAddress2 (illegal)
-	p.WriteByte(0xE5)          // Opcode: jmpz-int
+	p.WriteByte(0xE5)          // Opcode: jmpz-float
 	p.WriteByte(0x09)          // Opcode: push-int
 	p.WriteInt(testValueFalse) // Operant: testValueFalse
 	p.WriteByte(0x00)          // Opcode: end
@@ -356,7 +356,268 @@ func TestJmpzFloat(t *testing.T) {
 	p.WriteFloat(0.0)          // Operant: 0.0 (jumps)
 	p.WriteByte(0x09)          // Opcode: push-int
 	p.WriteInt(testAddress3)   // Operant: testAddress3 (illegal)
-	p.WriteByte(0xE5)          // Opcode: jmpz-int
+	p.WriteByte(0xE5)          // Opcode: jmpz-float
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueFalse) // Operant: testValueFalse
+	p.WriteByte(0x00)          // Opcode: end
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueTrue)  // Operant: testValueOK
+	p.WriteByte(0x00)          // Opcode: end
+
+	s = NewBuffer()
+
+	err = p.Run(s, nil)
+	if err.Error() != "illegal address" {
+		t.Errorf("Expected: illegal address")
+	}
+}
+
+func TestJmpzByteAddress(t *testing.T) {
+	testAddress1 := int(21)              // Fine address
+	testAddress2 := int(-1)              // Outside memory
+	testAddress3 := int(MEMORY_SIZE + 1) // Outside memory
+
+	testValueTrue := int(0x5A5A5A5A5A5A5A5A)  // If we ended up where we wanted to be under 'true' condition
+	testValueFalse := int(0x5555555555555555) // If we ended up where we wanted to be under 'false' condition
+
+	p := NewProgram()
+	p.WriteByte(0x08)          // Opcode: push-byte
+	p.WriteByte(0x00)          // Operant: 0 (jumps)
+	p.WriteByte(0xE8)          // Opcode: jmpz-byte()
+	p.WriteInt(testAddress1)   // Operant: testAddress1
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueFalse) // Operant: testValueFalse
+	p.WriteByte(0x00)          // Opcode: end
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueTrue)  // Operant: testValueOK
+	p.WriteByte(0x00)          // Opcode: end
+
+	s := NewBuffer()
+	s.WriteInt(testValueTrue)
+
+	err := p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x08)          // Opcode: push-byte
+	p.WriteByte(0xFF)          // Operant: FF (no jump)
+	p.WriteByte(0xE8)          // Opcode: jmpz-byte()
+	p.WriteInt(testAddress1)   // Operant: testAddress1
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueFalse) // Operant: testValueFalse
+	p.WriteByte(0x00)          // Opcode: end
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueTrue)  // Operant: testValueOK
+	p.WriteByte(0x00)          // Opcode: end
+
+	s = NewBuffer()
+	s.WriteInt(testValueFalse)
+
+	err = p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x08)          // Opcode: push-byte
+	p.WriteByte(0x00)          // Operant: 0 (jumps)
+	p.WriteByte(0xE8)          // Opcode: jmpz-byte()
+	p.WriteInt(testAddress2)   // Operant: testAddress2 (illegal)
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueFalse) // Operant: testValueFalse
+	p.WriteByte(0x00)          // Opcode: end
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueTrue)  // Operant: testValueOK
+	p.WriteByte(0x00)          // Opcode: end
+
+	s = NewBuffer()
+
+	err = p.Run(s, nil)
+	if err.Error() != "illegal address" {
+		t.Errorf("Expected: illegal address")
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x08)          // Opcode: push-byte
+	p.WriteByte(0x00)          // Operant: 0 (jumps)
+	p.WriteByte(0xE8)          // Opcode: jmpz-byte()
+	p.WriteInt(testAddress3)   // Operant: testAddress3 (illegal)
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueFalse) // Operant: testValueFalse
+	p.WriteByte(0x00)          // Opcode: end
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueTrue)  // Operant: testValueOK
+	p.WriteByte(0x00)          // Opcode: end
+
+	s = NewBuffer()
+
+	err = p.Run(s, nil)
+	if err.Error() != "illegal address" {
+		t.Errorf("Expected: illegal address")
+	}
+}
+
+func TestJmpzIntAddress(t *testing.T) {
+	testAddress1 := int(28)              // Fine address
+	testAddress2 := int(-1)              // Outside memory
+	testAddress3 := int(MEMORY_SIZE + 1) // Outside memory
+
+	testValueTrue := int(0x5A5A5A5A5A5A5A5A)  // If we ended up where we wanted to be under 'true' condition
+	testValueFalse := int(0x5555555555555555) // If we ended up where we wanted to be under 'false' condition
+
+	p := NewProgram()
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(0)              // Operant: 0 (jumps)
+	p.WriteByte(0xE9)          // Opcode: jmpz-int()
+	p.WriteInt(testAddress1)   // Operant: testAddress1
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueFalse) // Operant: testValueFalse
+	p.WriteByte(0x00)          // Opcode: end
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueTrue)  // Operant: testValueOK
+	p.WriteByte(0x00)          // Opcode: end
+
+	s := NewBuffer()
+	s.WriteInt(testValueTrue)
+
+	err := p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(-1)             // Operant: -1 (no jump)
+	p.WriteByte(0xE9)          // Opcode: jmpz-int()
+	p.WriteInt(testAddress1)   // Operant: testAddress1
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueFalse) // Operant: testValueFalse
+	p.WriteByte(0x00)          // Opcode: end
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueTrue)  // Operant: testValueOK
+	p.WriteByte(0x00)          // Opcode: end
+
+	s = NewBuffer()
+	s.WriteInt(testValueFalse)
+
+	err = p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(0)              // Operant: 0 (jumps)
+	p.WriteByte(0xE9)          // Opcode: jmpz-int()
+	p.WriteInt(testAddress2)   // Operant: testAddress2 (illegal)
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueFalse) // Operant: testValueFalse
+	p.WriteByte(0x00)          // Opcode: end
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueTrue)  // Operant: testValueOK
+	p.WriteByte(0x00)          // Opcode: end
+
+	s = NewBuffer()
+
+	err = p.Run(s, nil)
+	if err.Error() != "illegal address" {
+		t.Errorf("Expected: illegal address")
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(0)              // Operant: 0 (jumps)
+	p.WriteByte(0xE9)          // Opcode: jmpz-int()
+	p.WriteInt(testAddress3)   // Operant: testAddress3 (illegal)
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueFalse) // Operant: testValueFalse
+	p.WriteByte(0x00)          // Opcode: end
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueTrue)  // Operant: testValueOK
+	p.WriteByte(0x00)          // Opcode: end
+
+	s = NewBuffer()
+
+	err = p.Run(s, nil)
+	if err.Error() != "illegal address" {
+		t.Errorf("Expected: illegal address")
+	}
+}
+
+func TestJmpzFloatAddress(t *testing.T) {
+	testAddress1 := int(28)              // Fine address
+	testAddress2 := int(-1)              // Outside memory
+	testAddress3 := int(MEMORY_SIZE + 1) // Outside memory
+
+	testValueTrue := int(0x5A5A5A5A5A5A5A5A)  // If we ended up where we wanted to be under 'true' condition
+	testValueFalse := int(0x5555555555555555) // If we ended up where we wanted to be under 'false' condition
+
+	p := NewProgram()
+	p.WriteByte(0x0A)          // Opcode: push-float
+	p.WriteFloat(0.0)          // Operant: 0.0 (jumps)
+	p.WriteByte(0xEA)          // Opcode: jmpz-float()
+	p.WriteInt(testAddress1)   // Operant: testAddress1
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueFalse) // Operant: testValueFalse
+	p.WriteByte(0x00)          // Opcode: end
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueTrue)  // Operant: testValueOK
+	p.WriteByte(0x00)          // Opcode: end
+
+	s := NewBuffer()
+	s.WriteInt(testValueTrue)
+
+	err := p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x0A)          // Opcode: push-float
+	p.WriteFloat(-1.0)         // Operant: -1.0 (no jump)
+	p.WriteByte(0xEA)          // Opcode: jmpz-float()
+	p.WriteInt(testAddress1)   // Operant: testAddress1
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueFalse) // Operant: testValueFalse
+	p.WriteByte(0x00)          // Opcode: end
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueTrue)  // Operant: testValueOK
+	p.WriteByte(0x00)          // Opcode: end
+
+	s = NewBuffer()
+	s.WriteInt(testValueFalse)
+
+	err = p.Run(s, nil)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x0A)          // Opcode: push-float
+	p.WriteFloat(0.0)          // Operant: 0.0 (jumps)
+	p.WriteByte(0xEA)          // Opcode: jmpz-float()
+	p.WriteInt(testAddress2)   // Operant: testAddress2 (illegal)
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueFalse) // Operant: testValueFalse
+	p.WriteByte(0x00)          // Opcode: end
+	p.WriteByte(0x09)          // Opcode: push-int
+	p.WriteInt(testValueTrue)  // Operant: testValueOK
+	p.WriteByte(0x00)          // Opcode: end
+
+	s = NewBuffer()
+
+	err = p.Run(s, nil)
+	if err.Error() != "illegal address" {
+		t.Errorf("Expected: illegal address")
+	}
+
+	p = NewProgram()
+	p.WriteByte(0x0A)          // Opcode: push-float
+	p.WriteFloat(0.0)          // Operant: 0.0 (jumps)
+	p.WriteByte(0xEA)          // Opcode: jmpz-float()
+	p.WriteInt(testAddress3)   // Operant: testAddress3 (illegal)
 	p.WriteByte(0x09)          // Opcode: push-int
 	p.WriteInt(testValueFalse) // Operant: testValueFalse
 	p.WriteByte(0x00)          // Opcode: end
