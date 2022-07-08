@@ -180,6 +180,9 @@ func NewVirtualMachine(memorySize int, stackSize int) (vm *VirtualMachine, err e
 	vm.jumpTable[0xE8] = vm.operationJmpzByteAddress
 	vm.jumpTable[0xE9] = vm.operationJmpzIntAddress
 	vm.jumpTable[0xEA] = vm.operationJmpzFloatAddress
+	vm.jumpTable[0xEC] = vm.operationJmpnzByte
+	vm.jumpTable[0xED] = vm.operationJmpnzInt
+	vm.jumpTable[0xEE] = vm.operationJmpnzFloat
 	vm.jumpTable[0xF8] = vm.operationCall
 	vm.jumpTable[0xF9] = vm.operationCallAddress
 
