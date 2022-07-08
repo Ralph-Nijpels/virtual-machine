@@ -96,11 +96,11 @@ _this probably forces us to write an assembler before completing the instruction
 |      |        |                  | 0x80, 0x90, 0xA0, 0xB0, and 0xC0. We are goin to use section 0xD0 for input/ouput         |
 |      |        |                  |                                                                                           |
 | [x]  | 0xE0   | ret              | pop an address from stack and jump there                                                  |
-| [ ]  | 0xE1   | jmp         (nn) | takes an address operant and jumps there                                                  |
+| [x]  | 0xE1   | jmp         (nn) | takes an address operant and jumps there                                                  |
 |      |        |                  |                                                                                           |
-| [ ]  | 0xE4   | jmpz-byte        |                                                                                           |
-| [ ]  | 0xE5   | jmpz-int         |                                                                                           |
-| [ ]  | 0xE6   | jmpz-float       |                                                                                           |
+| [x]  | 0xE4   | jmpz-byte        | pops an address and a byte from stack, jumps to the address if the byte == 0              |
+| [x]  | 0xE5   | jmpz-int         | pops an address and an int from stack, jumps to the address if the int == 0               |
+| [x]  | 0xE6   | jmpz-float       | pops an address and a float from stack, jumps to the address if the float == 0.0          |
 |      |        |                  |                                                                                           |
 | [ ]  | 0xE8   | jmpz-byte   (nn) |                                                                                           |
 | [ ]  | 0xE9   | jmpz-int    (nn) |                                                                                           |
