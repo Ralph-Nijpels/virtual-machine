@@ -106,13 +106,13 @@ _this probably forces us to write an assembler before completing the instruction
 | [x]  | 0xE9   | jmpz-int    (nn) | takes an address as opperant and pops an int from stack, jumps to the address if the byte == 0  |
 | [x]  | 0xEA   | jmpz-float  (nn) | takes an address as opperant and pops a float from stack, jumps to the address if the byte == 0 |
 |      |        |                  |                                                                                                 |
-| [ ]  | 0xEC   | jmpnz-byte       | pops an address and a byte from stack, jumps to the address if the byte != 0                    |
-| [ ]  | 0xED   | jmpnz-int        | pops an address and an int from stack, jumps to the address if the int != 0                     |
-| [ ]  | 0xEE   | jmpnz-float      | pops an address and a float from stack, jumps to the address if the float != 0.0                |
+| [x]  | 0xEC   | jmpnz-byte       | pops an address and a byte from stack, jumps to the address if the byte != 0                    |
+| [x]  | 0xED   | jmpnz-int        | pops an address and an int from stack, jumps to the address if the int != 0                     |
+| [x]  | 0xEE   | jmpnz-float      | pops an address and a float from stack, jumps to the address if the float != 0.0                |
 |      |        |                  |                                                                                                 |
-| [ ]  | 0xF0   | jmpnz-byte  (nn) |                                                                                                 |
-| [ ]  | 0xF1   | jmpnz-int   (nn) |                                                                                                 |
-| [ ]  | 0xF2   | jmpnz-float (nn) |                                                                                                 |
+| [x]  | 0xF0   | jmpnz-byte  (nn) | takes an address as opperant and pops a byte from stack, jumps to the address if the byte != 0  |
+| [x]  | 0xF1   | jmpnz-int   (nn) | takes an address as opperant and pops an int from stack, jumps to the address if the byte != 0  |
+| [x]  | 0xF2   | jmpnz-float (nn) | takes an address as opperant and pops a float from stack, jumps to the address if the byte != 0 |
 |      |        |                  |                                                                                                 |
 | [x]  | 0xF8   | call             | pop an address from stack, pushes current pointer+1 and jumps to the address                    |
 | [x]  | 0xF9   | call        (nn) | takes an address operant, pushes current pointer+1 and jumps to the address                     |

@@ -273,6 +273,84 @@ func (vm *VirtualMachine) operationJmpnzFloat() (err error) {
 	return nil
 }
 
+// operationJmpnzByteAddress takes an address as opperant and pops a byte from stack, jumps to the address if the byte != 0
+func (vm *VirtualMachine) operationJmpnzByteAddress() (err error) {
+	address, err := vm.memory.GetInt(vm.programPointer + 1)
+	if err != nil {
+		return err
+	}
+
+	if address < 0 || address >= vm.memory.Size() {
+		return fmt.Errorf("illegal address")
+	}
+
+	operant, err := vm.stack.PopByte()
+	if err != nil {
+		return err
+	}
+
+	if operant != byte(0) {
+		vm.programPointer = address
+	} else {
+		vm.programPointer += (1 + (int)(unsafe.Sizeof(address)))
+	}
+
+	vm.addLog("jmpnz-byte()")
+	return nil
+}
+
+// operationJmpnzIntAddress takes an address as opperant and pops an int from stack, jumps to the address if the byte != 0
+func (vm *VirtualMachine) operationJmpnzIntAddress() (err error) {
+	address, err := vm.memory.GetInt(vm.programPointer + 1)
+	if err != nil {
+		return err
+	}
+
+	if address < 0 || address >= vm.memory.Size() {
+		return fmt.Errorf("illegal address")
+	}
+
+	operant, err := vm.stack.PopInt()
+	if err != nil {
+		return err
+	}
+
+	if operant != int(0) {
+		vm.programPointer = address
+	} else {
+		vm.programPointer += (1 + (int)(unsafe.Sizeof(address)))
+	}
+
+	vm.addLog("jmpz-int()")
+	return nil
+}
+
+// operationJmpnzFloatAddress takes an address as opperant and pops a float from stack, jumps to the address if the byte != 0
+func (vm *VirtualMachine) operationJmpnzFloatAddress() (err error) {
+	address, err := vm.memory.GetInt(vm.programPointer + 1)
+	if err != nil {
+		return err
+	}
+
+	if address < 0 || address >= vm.memory.Size() {
+		return fmt.Errorf("illegal address")
+	}
+
+	operant, err := vm.stack.PopFloat()
+	if err != nil {
+		return err
+	}
+
+	if operant != float64(0.0) {
+		vm.programPointer = address
+	} else {
+		vm.programPointer += (1 + (int)(unsafe.Sizeof(address)))
+	}
+
+	vm.addLog("jmpnz-float()")
+	return nil
+}
+
 // operationCall takes an address from the stack, pushes the current address + 1 to the stack and jumps to the address taken
 func (vm *VirtualMachine) operationCall() (err error) {
 	address, err := vm.stack.PopInt()
