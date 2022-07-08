@@ -172,6 +172,9 @@ func NewVirtualMachine(memorySize int, stackSize int) (vm *VirtualMachine, err e
 	vm.jumpTable[0x71] = vm.operationOrByte
 	vm.jumpTable[0x72] = vm.operationNotByte
 	vm.jumpTable[0x73] = vm.operationXorByte
+	vm.jumpTable[0xE0] = vm.operationRet
+	vm.jumpTable[0xF8] = vm.operationCall
+	vm.jumpTable[0xF9] = vm.operationCallAddress
 
 	// Build the resources
 	vm.memory = NewMemory(memorySize)

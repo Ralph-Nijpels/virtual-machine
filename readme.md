@@ -95,8 +95,8 @@ _this probably forces us to write an assembler before completing the instruction
 |      |        |                  | some intentional open space in the opcode table for some math & string stuff in sections  |
 |      |        |                  | 0x80, 0x90, 0xA0, 0xB0, and 0xC0. We are goin to use section 0xD0 for input/ouput         |
 |      |        |                  |                                                                                           |
-| [ ]  | 0xE0   | ret              | pop an address from stack and jump there                                                  |
-| [ ]  | 0xE1   | jmp         (nn) | direct address                                                                            |
+| [x]  | 0xE0   | ret              | pop an address from stack and jump there                                                  |
+| [ ]  | 0xE1   | jmp         (nn) | takes an address operant and jumps there                                                  |
 |      |        |                  |                                                                                           |
 | [ ]  | 0xE4   | jmpz-byte        |                                                                                           |
 | [ ]  | 0xE5   | jmpz-int         |                                                                                           |
@@ -114,5 +114,5 @@ _this probably forces us to write an assembler before completing the instruction
 | [ ]  | 0xF1   | jmpnz-int   (nn) |                                                                                           |
 | [ ]  | 0xF2   | jmpnz-float (nn) |                                                                                           |
 |      |        |                  |                                                                                           |
-| [ ]  | 0xF8   | call             | address from stack                                                                        |
-| [ ]  | 0xF9   | call        (nn) |                                                                                           |
+| [x]  | 0xF8   | call             | pop an address from stack, pushes current pointer+1 and jumps to the address              |
+| [x]  | 0xF9   | call        (nn) | takes an address operant, pushes current pointer+1 and jumps to the address               |
